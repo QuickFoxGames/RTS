@@ -1,124 +1,161 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
+
 public class TreeGenerator : MonoBehaviour
 {
-    [Header("Trees")]
-    [SerializeField] private int m_width;
-    [SerializeField] private int m_height;
-    [SerializeField] private int m_numberOFTrees;
-    [SerializeField] private float m_minDistBetweenTrees;
-    [Header("Trunks")]
-    [SerializeField] private Vector2 m_minmaxTrunkScale;
-    [Header("Branches")]
-    [SerializeField] private Vector3 m_maxAngles;
-    [SerializeField] private Vector2 m_minmaxBranchHeight;
-    [SerializeField] private Vector2 m_minmaxNumberOfBranch;
-    [SerializeField] private Vector2 m_minmaxBranchScale;
-    [Header("Prefabs")]
-    [SerializeField] private GameObject m_trunk; 
-    [SerializeField] private GameObject m_branch;
+    [SerializeField] private int numVertsPerNode;
+    [SerializeField] private Vector2 minmaxTrunkNodes;
+    [SerializeField] private Vector2 minmaxTrunkLength;
+    [SerializeField] private Vector2 minmaxBranchNodes;
+    [SerializeField] private Vector2 minmaxBranchLength;
+    [SerializeField] private MeshFilter meshFilter;
+    private List<Node> m_nodes = new();
 
-    private List<GameObject> m_Trees;
-    void Start()
+    private void Start()
     {
-        m_Trees = new List<GameObject>();
-        GenerateTree();
+        GenerateTrunk();
     }
-    private void GenerateTree()
+    private void GenerateTrunk()
     {
-        for (int i = 0; i < m_numberOFTrees; i++)
+        List<Node> trunkNodes = new()
         {
-            GameObject trunk = Instantiate(m_trunk, transform);
-            Vector3 pos = RandomizePos();
-            trunk.transform.SetLocalPositionAndRotation(pos, Quaternion.Euler(0f, Random.Range(-360, 360), 0f));
-            float s = Random.Range(m_minmaxTrunkScale.x, m_minmaxTrunkScale.y);
-            trunk.transform.GetChild(0).localScale = new Vector3(1f, s, 1f);
-            m_Trees.Add(trunk);
-            StartCoroutine(AddBranches(trunk, s));
-        }
-    }
-    private Vector3 RandomizePos()
-    {
-        Vector3 pos = new(Random.Range(-m_width * 0.5f, m_width * 0.5f), 0f, Random.Range(-m_height * 0.5f, m_height * 0.5f));
-        if (!CheckDistances(pos)) RandomizePos();
-        return pos;
-    }
-    private bool CheckDistances(Vector3 pos)
-    {
-        foreach (var t in m_Trees)
-        {
-            if (Vector3.Distance(t.transform.localPosition, pos) < m_minDistBetweenTrees) return false;
-        }
-        return true;
-    }
-    private IEnumerator AddBranches(GameObject trunk, float s)
-    {
-        int numBranches = (int)Random.Range(m_minmaxNumberOfBranch.x, m_minmaxNumberOfBranch.y);
-        for (int i = 0; i < numBranches; i++)
-        {
-            GameObject branch = Instantiate(m_branch, trunk.transform);
-            branch.transform.SetLocalPositionAndRotation(new Vector3(0f, Random.Range(m_minmaxBranchHeight.x, m_minmaxBranchHeight.y * s), 0f), Quaternion.Euler(Random.Range(-m_maxAngles.x, m_maxAngles.x), Random.Range(-m_maxAngles.y, m_maxAngles.y), Random.Range(-m_maxAngles.z, m_maxAngles.z)));
-            float s2 = Random.Range(m_minmaxBranchScale.x, m_minmaxBranchScale.y);
-            branch.transform.GetChild(0).localScale = new Vector3(1f, s2, 1f);
-            yield return null;
-        }
-        yield return null;
-    }
-    //////////////////////////////////////////////////////////////////////////////////////////////////////////
-    public int vertsPerPoint;
-    public int vertDistFromPoint;
-    private List<Point> points = new();
-    private List<Vector3[]> verts = new();
-    private void TracePath()
-    {
-        for (int i = 0; i < points.Count; i++)
-        {
-            points[i].direction = i != 0 ? Vector3.Lerp(points[i].direction, points[i + 1].position - points[i].position, 0.5f) : points[i + 1].position - points[i].position;
-            GenerateVerts(points[i]);
-            verts.Add(points[i].verts);
-        }
-    }
-    private void GenerateVerts(Point p)
-    {
-        Vector3[] verts = new Vector3[vertsPerPoint];
-        float angleStep = 360f / vertsPerPoint;
-        Vector3 right = Vector3.Cross(p.direction, Vector3.forward).normalized;
-        if (right == Vector3.zero) { right = Vector3.Cross(p.direction.normalized, Vector3.right); }
-        Vector3 forward = Vector3.Cross(p.direction.normalized, right).normalized;
-        for (int i = 0; i < vertsPerPoint; i++)
-        {
-            float angle = i * angleStep * Mathf.Deg2Rad;
-            Vector3 vert = p.position + (Mathf.Cos(angle) * right + Mathf.Sin(angle) * forward) * vertDistFromPoint;
-            verts[i] = vert;
-        }
-        p.verts = verts;
-    }
-    private void GenerateMeshFromVerts()
-    {
-        List<Vector3> vertices = new();
-        List<int> tris = new();
+            new Node(Vector3.zero, 1f) // Add the base node of the trunk
+        };
+        int numNodes = (int)Random.Range(minmaxTrunkNodes.x, minmaxTrunkNodes.y);
+        float h = Random.Range(minmaxTrunkLength.x, minmaxTrunkLength.y);
+        float segMin = h / numNodes;
+        numNodes--;
+        float segMax = h / numNodes;
 
-        int loopcount = verts.Count;
-
-        foreach (Vector3[] loop in verts)
+        for (int i = 1; i < numNodes; i++)
         {
-            vertices.AddRange(loop);
+            trunkNodes.Add(new Node(Random.Range(segMin, segMax) * Vector3.up + trunkNodes[i - 1].Position, 1f));
         }
 
+        // Ensure there are at least 2 nodes to create a mesh
+        if (trunkNodes.Count >= 2)
+        {
+            GenerateMesh(trunkNodes);
+        }
+        else
+        {
+            Debug.LogWarning("Not enough nodes to generate a mesh.");
+        }
     }
-    private class Point
+
+    private void GenerateMesh(List<Node> nodes)
     {
-        public Vector3 position;
-        public Vector3 direction;
-        public Vector3[] verts;
+        List<Vector3> allVerts = new();
+        List<int> triangles = new();
+
+        int vertIndexOffset = 0;
+
+        for (int i = 0; i < nodes.Count; i++)
+        {
+            Vector3 dir = Vector3.up;
+            if (i != 0)
+            {
+                Vector3 dirFromLast = nodes[i].Position - nodes[i - 1].Position;
+                if (i != nodes.Count - 1)
+                {
+                    Vector3 dirToNext = nodes[i + 1].Position - nodes[i].Position;
+                    dir = Vector3.Lerp(dirFromLast, dirToNext, dirToNext.magnitude / (dirFromLast.magnitude + dirToNext.magnitude));
+                }
+                else
+                {
+                    dir = dirFromLast;
+                }
+            }
+
+            GenerateVertsOn(nodes[i], dir);
+            allVerts.AddRange(nodes[i].verts);
+
+            if (i > 0)
+            {
+                int numVerts = nodes[i].verts.Count;
+                int baseIndex = vertIndexOffset;
+
+                // Debugging information
+                Debug.Log($"Processing node {i} with {numVerts} vertices");
+                Debug.Log($"Base index: {baseIndex}");
+
+                // Ensure vertex count is consistent between nodes
+                if (numVerts != nodes[i - 1].verts.Count)
+                {
+                    Debug.LogError("Vertex count mismatch between nodes.");
+                    return;
+                }
+
+                // Generate triangles between nodes
+                for (int j = 0; j < numVerts; j++)
+                {
+                    int nextIndex = (j + 1) % numVerts;
+
+                    // Check if indices are within bounds
+                    if (baseIndex + j >= allVerts.Count ||
+                        baseIndex + nextIndex >= allVerts.Count ||
+                        baseIndex + numVerts + j >= allVerts.Count ||
+                        baseIndex + numVerts + nextIndex >= allVerts.Count)
+                    {
+                        Debug.LogError($"Triangle index out of bounds: baseIndex={baseIndex}, j={j}, nextIndex={nextIndex}, numVerts={numVerts}");
+                        Debug.LogError($"allVerts count: {allVerts.Count}");
+                        return;
+                    }
+
+                    // Create two triangles for each quad between nodes
+                    triangles.Add(baseIndex + j);
+                    triangles.Add(baseIndex + nextIndex);
+                    triangles.Add(baseIndex + numVerts + j);
+
+                    triangles.Add(baseIndex + nextIndex);
+                    triangles.Add(baseIndex + numVerts + nextIndex);
+                    triangles.Add(baseIndex + numVerts + j);
+                }
+            }
+
+            vertIndexOffset += nodes[i].verts.Count;
+        }
+
+        Mesh mesh = new()
+        {
+            vertices = allVerts.ToArray(),
+            triangles = triangles.ToArray()
+        };
+
+        mesh.RecalculateNormals();
+        mesh.name = "Trunk";
+        meshFilter.mesh = mesh;
+    }
+
+    private void GenerateVertsOn(Node n, Vector3 dir)
+    {
+        Vector3 perp = Vector3.Cross(dir, Vector3.up);
+        if (perp == Vector3.zero)  // Special case where axis is Vector3.up
+            perp = Vector3.Cross(dir, Vector3.right);
+
+        float angleStep = 360f / numVertsPerNode;
+        n.verts.Clear(); // Ensure verts list is clear before adding new vertices
+
+        for (int i = 0; i < numVertsPerNode; i++)
+        {
+            float angleInRadians = Mathf.Deg2Rad * angleStep * i;
+            Vector3 positionOnCircle = n.scale * (Mathf.Cos(angleInRadians) * perp + Mathf.Sin(angleInRadians) * Vector3.Cross(dir, perp));
+            Vector3 position = positionOnCircle + n.Position; // Use n.Position for final position
+            n.verts.Add(position);
+        }
+    }
+
+
+    public class Node
+    {
+        public Vector3 Position;
+        public float scale;
+        public List<Vector3> verts;
+        public Node(Vector3 pos, float s)
+        {
+            Position = pos;
+            scale = s;
+            verts = new();
+        }
     }
 }
-// Generate meshes
-/*
- * ordered array of points
- * grab the direction at each point by lerping between the direction from the last point and the direction towards the new point
- * generate x number of vertecies around the point using the calculated direction
- * repeat for all points
- * generate a mesh by connecting all the vertecies
- */

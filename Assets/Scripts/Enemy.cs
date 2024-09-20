@@ -11,10 +11,10 @@ public class Enemy : MonoBehaviour
 
     private Vector3 m_vel;
     private Quaternion m_targetRotation;
-    private Transform m_target;
+    private Vector3 m_target;
 
     private Character m_character;
-    private GameManager m_gameManager;
+    private Player m_player;
     public enum State
     {
         Wander,
@@ -24,60 +24,42 @@ public class Enemy : MonoBehaviour
     private State m_currentState = State.Wander;
     void Start()
     {
-        m_target = GameManager.Instance().MainCharacter.transform;
+        m_player = Player.Instance();
         m_character = GetComponent<Character>();
-        SetRandomRotation();
+        m_target = m_player.AveragePosition;
+        //SetRandomRotation();
+        StartCoroutine(NewWanderDestination(0.1f));
     }
     void Update()
     {
         CheckForTarget();
-        switch (m_currentState)
-        {
-            case State.Wander:
-                Wander();
-                break;
-            case State.Seek:
-                Seek();
-                break;
-        }
+    }
+    private void FixedUpdate()
+    {
+        m_target = m_player.AveragePosition;
     }
     private void CheckForTarget()
     {
-        Vector3 dist = m_target.position - transform.position;
+        Vector3 dist = m_target - transform.position;
         if (dist.magnitude < m_seekDistance && Vector3.Dot(dist.normalized, transform.forward) < m_seekAngle) m_currentState = State.Seek;
         else m_currentState = State.Wander;
     }
-    #region Wander
-    private void Wander()
+    private IEnumerator NewWanderDestination(float s)
     {
-        WanderRotate();
-        WanderMove();
-    }
-    private void WanderRotate()
-    {
-        float angleDifference = Quaternion.Angle(transform.rotation, m_targetRotation);
-        float fractionOfRotationThisFrame = (m_rotationSpeed * Time.deltaTime) / angleDifference;
-        transform.rotation = Quaternion.Slerp(transform.rotation, m_targetRotation, fractionOfRotationThisFrame);
-        if (angleDifference < 10f)
+        yield return new WaitForSeconds(s);
+        Vector3 dest = transform.position + Random.Range(m_seekDistance * 0.1f, m_seekDistance * 0.5f) * transform.forward + Random.Range(-m_seekDistance, m_seekDistance) * transform.right;
+        if (m_currentState == State.Wander)
         {
-            SetRandomRotation();
+            m_character.SetAgentTarget(dest);
+            StartCoroutine(NewWanderDestination(Vector3.Distance(transform.position, dest) / (m_character.Speed * 2f)));
         }
+        else StartCoroutine(NewSeekDestination(Vector3.Distance(transform.position, m_target) / (m_character.Speed * 4f)));
     }
-    private void WanderMove()
+    private IEnumerator NewSeekDestination(float s)
     {
-        m_vel = Vector3.Lerp(m_vel, m_character.Speed * transform.forward, m_character.Speed * 2.285f * Time.deltaTime);
-        transform.position += m_vel * Time.deltaTime;
+        yield return new WaitForSeconds(s);
+        m_character.SetAgentTarget(m_target);
+        if (m_currentState == State.Seek) StartCoroutine(NewSeekDestination(Vector3.Distance(transform.position, m_target) / (m_character.Speed * 4f)));
+        else StartCoroutine(NewWanderDestination(0.1f));
     }
-    private void SetRandomRotation()
-    {
-        float randomYRotation = Random.Range(-m_angleMax, m_angleMax);
-        m_targetRotation = Quaternion.Euler(0, randomYRotation, 0);
-    }
-    #endregion
-    #region Seek
-    private void Seek()
-    {
-        m_character.SetAgentTarget(m_target.position);
-    }
-    #endregion
 }
