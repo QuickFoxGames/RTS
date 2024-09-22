@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 public class Character : MonoBehaviour
@@ -7,8 +9,12 @@ public class Character : MonoBehaviour
     [SerializeField] private float m_damage;
     [SerializeField] private float m_resistance;
 
+    public List<Attack> m_attacks = new();
+
     private float m_currentHp = 0f;
     private float m_vel = 0f;
+
+    private Attack m_currentAttack = null;
 
     private Animator m_animator;
     private NavMeshAgent m_agent;
@@ -30,8 +36,28 @@ public class Character : MonoBehaviour
     {
         m_agent.SetDestination(pos);
     }
+    public void UseAttack(int i)
+    {
+        m_animator.SetInteger("AttackIndex", i);
+        if (m_currentAttack == null) StartCoroutine(RunAttack(m_attacks[i]));
+    }
+    private IEnumerator RunAttack(Attack a)
+    {
+        m_currentAttack = a;
+        yield return new WaitForSeconds(a.m_durration * a.m_speedMulti);
+        m_currentAttack = null;
+    }
     public float Health { get { return m_currentHp; } set { m_currentHp -= value; } }
     public float Speed { get { return m_speed; } }
     public float Damage { get { return m_damage; } }
     public float Resistance { get { return m_resistance; } }
+}
+[System.Serializable]
+public class Attack
+{
+    public float m_damage;
+    public float m_speedMulti;
+    public float m_durration;
+    [SerializeField] private float m_maxUses;
+    public float m_currentUses;
 }
