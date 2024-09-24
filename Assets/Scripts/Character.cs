@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 public class Character : MonoBehaviour
 {
     [SerializeField] private float m_maxHp;
@@ -10,6 +11,8 @@ public class Character : MonoBehaviour
     [SerializeField] private float m_resistance;
 
     public List<Attack> m_attacks = new();
+
+    public Sprite m_ArenaSprite;
 
     private float m_currentHp = 0f;
     private float m_vel = 0f;

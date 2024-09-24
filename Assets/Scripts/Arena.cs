@@ -1,26 +1,37 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 public class Arena : MonoBehaviour
 {
     [SerializeField] private int m_numberOfCharacters;
     [SerializeField] private int m_collums;
     [SerializeField] private float m_distance;
-    [SerializeField] private List<Character> m_enemies;
     [SerializeField] private List<Transform> m_spawnSpots;
+    [SerializeField] private GameObject m_buttonParent;
+    [SerializeField] private GameObject m_combatMenu;
 
-    private List<Character> m_characters;
     private Player m_player;
     private void Start()
     {
         m_player = Player.Instance();
-        m_characters = new List<Character>();
         //SetLayout();
         foreach (var character in m_player.Characters)
         {
             Transform temp = PickSpawn();
             character.transform.SetPositionAndRotation(temp.position, temp.rotation);
             m_spawnSpots.Remove(temp);
+            GameObject g = new()
+            {
+                name = character.name + "_Button"
+            };
+            g.transform.parent = m_buttonParent.transform;
+            g.AddComponent<CanvasRenderer>();
+            Image im = g.AddComponent<Image>();
+            im.sprite = character.m_ArenaSprite;
+            Button b = g.AddComponent<Button>();
+            b.targetGraphic = im;
+            b.onClick.AddListener(() => SetActiveCharacter(character));
         }
     }
     private Transform PickSpawn()
@@ -29,56 +40,25 @@ public class Arena : MonoBehaviour
         if (spawn == null) PickSpawn();
         return spawn;
     }
-    private void SetLayout()
-    {
-        int count = 0;
-        float offset = 0f;
-        for (int i = 0; i < (m_numberOfCharacters < m_player.Characters.Count ? m_numberOfCharacters : m_player.Characters.Count); i++)
-        {
-            m_characters.Add(m_player.Characters[i]);
-            m_characters[i].transform.position = ((m_distance * 0.5f * (m_collums - 1)) - (count * m_distance)) * transform.forward + offset * transform.right + Vector3.up;
-            count++;
-            if (count > (m_collums - 1))
-            {
-                count = 0;
-                offset -= m_distance;
-            }
-        }
-    }
-    private void UpdateLayout()
-    {
-        int count = 0;
-        float offset = 0f;
-        for (int i = 0; i < (m_numberOfCharacters < m_player.Characters.Count ? m_numberOfCharacters : m_player.Characters.Count); i++)
-        {
-            m_characters[i].transform.position = transform.position + (((m_distance * 0.5f * (m_collums - 1)) - (count * m_distance)) * transform.forward) + (offset * transform.right);
-            count++;
-            if (count > (m_collums - 1))
-            {
-                count = 0;
-                offset -= m_distance;
-            }
-        }
-    }
     void Update()
     {
-        
+        m_buttonParent.SetActive(m_player.m_currentState == Player.State.Select);
+        m_combatMenu.SetActive(m_player.m_currentState == Player.State.Fight);
     }
-    /*private void FixedUpdate()
-    {
-        UpdateLayout();
-    }*/
     public void UsesAttackOn(Character attacker, Character defender)
     {
         float diff = Mathf.Abs(attacker.Speed - defender.Speed);
-
-
         float rand = Random.Range(attacker.Speed, defender.Speed);
         if (rand < Mathf.Abs(attacker.Speed - defender.Speed))
         {
             float finalDamage = attacker.Damage;
             finalDamage *= defender.Resistance / 100f;
         }
-
+    }
+    public void SetActiveCharacter(Character character)
+    {
+        m_player.m_activeCharacter = character;
+        m_player.ChangeState(Player.State.Fight);
+        m_buttonParent.gameObject.SetActive(false);
     }
 }

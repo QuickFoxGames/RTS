@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 public class Player : Singleton_template<Player>
 {
-    private enum State
+    public enum State
     {
         Explore,
+        Select,
+        Move,
         Fight
     }
-    private State m_currentState = State.Explore;
+    public State m_currentState = State.Explore;
 
+    public bool BackToSelect { get; private set; }
     public bool Mouse1 { get; private set; }
     public bool Mouse0 { get; private set; }
     public float MouseX { get; private set; }
@@ -18,10 +21,10 @@ public class Player : Singleton_template<Player>
     [SerializeField] private float m_distanceBetweenCharacters;
     [SerializeField] private List<Character> m_characters;
 
-    private Character m_activeCharacter;
+    public Character m_activeCharacter;
     void Start()
     {
-        m_activeCharacter = m_characters[0];
+        DontDestroyOnLoad(gameObject);
     }
     void Update()
     {
@@ -29,6 +32,9 @@ public class Player : Singleton_template<Player>
         //MouseY = Input.GetAxisRaw("Mouse Y");
         Mouse0 = Input.GetKey(KeyCode.Mouse0);
         Mouse1 = Input.GetKey(KeyCode.Mouse1);
+        BackToSelect = Input.GetKey(KeyCode.E);
+
+        if (BackToSelect) m_currentState = State.Select;
 
         if (Mouse0) 
         { 
@@ -37,11 +43,19 @@ public class Player : Singleton_template<Player>
                 case State.Explore:
                     MoveAllOnClick();
                     break;
-                case State.Fight:
+                case State.Move:
                     MoveActiveOnClick();
+                    break;
+                case State.Select:
+                    break;
+                case State.Fight:
                     break;
             }
         }
+    }
+    public void ChangeState(State state)
+    {
+        m_currentState = state;
     }
     private void MoveAllOnClick()
     { // gets circular positions around the clicked destination and moves each character accordingly
