@@ -58,7 +58,7 @@ public class Arena : MonoBehaviour
     public void SetActiveCharacter(Character character)
     {
         m_player.m_activeCharacter = character;
-        m_player.ChangeState(Player.State.Fight);
+        m_player.ChangeState(Player.State.Move);
         m_buttonParent.gameObject.SetActive(false);
     }
 }

@@ -13,6 +13,7 @@ public class Player : Singleton_template<Player>
     public State m_currentState = State.Explore;
 
     public bool BackToSelect { get; private set; }
+    public bool EndMovePhase { get; private set; }
     public bool Mouse1 { get; private set; }
     public bool Mouse0 { get; private set; }
     public float MouseX { get; private set; }
@@ -33,8 +34,10 @@ public class Player : Singleton_template<Player>
         Mouse0 = Input.GetKey(KeyCode.Mouse0);
         Mouse1 = Input.GetKey(KeyCode.Mouse1);
         BackToSelect = Input.GetKey(KeyCode.E);
+        EndMovePhase = Input.GetKey(KeyCode.R);
 
-        if (BackToSelect) m_currentState = State.Select;
+        if (BackToSelect && m_currentState != State.Fight) m_currentState = State.Select;
+        if (EndMovePhase) m_currentState = State.Fight;
 
         if (Mouse0) 
         { 
