@@ -9,6 +9,7 @@ public class Arena : MonoBehaviour
     [SerializeField] private float m_distance;
     [SerializeField] private List<Transform> m_spawnSpots;
     [SerializeField] private GameObject m_buttonParent;
+    [SerializeField] private GameObject m_moveMenu;
     [SerializeField] private GameObject m_combatMenu;
 
     private Player m_player;
@@ -20,6 +21,7 @@ public class Arena : MonoBehaviour
         {
             Transform temp = PickSpawn();
             character.transform.SetPositionAndRotation(temp.position, temp.rotation);
+            character.WarpAgentPosition(character.transform.position);
             m_spawnSpots.Remove(temp);
             GameObject g = new()
             {
@@ -43,22 +45,21 @@ public class Arena : MonoBehaviour
     void Update()
     {
         m_buttonParent.SetActive(m_player.m_currentState == Player.State.Select);
+        m_moveMenu.SetActive(m_player.m_currentState == Player.State.Move);
         m_combatMenu.SetActive(m_player.m_currentState == Player.State.Fight);
     }
-    public void UsesAttackOn(Character attacker, Character defender)
+    public void UseAttack()
     {
-        float diff = Mathf.Abs(attacker.Speed - defender.Speed);
-        float rand = Random.Range(attacker.Speed, defender.Speed);
-        if (rand < Mathf.Abs(attacker.Speed - defender.Speed))
-        {
-            float finalDamage = attacker.Damage;
-            finalDamage *= defender.Resistance / 100f;
-        }
+        m_player.m_activeCharacter.UseAttack(0);
     }
     public void SetActiveCharacter(Character character)
     {
         m_player.m_activeCharacter = character;
         m_player.ChangeState(Player.State.Move);
-        m_buttonParent.gameObject.SetActive(false);
+        m_buttonParent.SetActive(false);
+    }
+    public void ToggleMenu(GameObject menuToToggle)
+    {
+        menuToToggle.SetActive(!menuToToggle.activeInHierarchy);
     }
 }

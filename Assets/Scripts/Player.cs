@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 public class Player : Singleton_template<Player>
 {
     public enum State
@@ -92,4 +93,14 @@ public class Player : Singleton_template<Player>
             }
             return temp / m_characters.Count;
         } }
+
+    public void EnterArena(int index)
+    {
+        foreach (var character in m_characters)
+        {
+            DontDestroyOnLoad(character);
+        }
+        m_currentState = State.Select;
+        SceneManager.LoadScene(index);
+    }
 }

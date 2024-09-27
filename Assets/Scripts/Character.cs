@@ -2,7 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UI;
 public class Character : MonoBehaviour
 {
     [SerializeField] private float m_maxHp;
@@ -38,6 +37,10 @@ public class Character : MonoBehaviour
     public void SetAgentTarget(Vector3 pos)
     {
         m_agent.SetDestination(pos);
+    }
+    public void WarpAgentPosition(Vector3 pos)
+    {
+        m_agent.Warp(pos);
     }
     public void UseAttack(int i)
     {
