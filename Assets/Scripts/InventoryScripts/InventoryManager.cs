@@ -17,7 +17,7 @@ public class InventoryManager : MonoBehaviour
         Items.Add(item);
     }
 
-    public void OnRectTransformRemoved(Item item)
+    public void EPICOnRectTransformRemoved(Item item)
     {
         Items.Remove(item);
     }
