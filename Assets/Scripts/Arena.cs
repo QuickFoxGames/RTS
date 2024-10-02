@@ -48,9 +48,9 @@ public class Arena : MonoBehaviour
         m_moveMenu.SetActive(m_player.m_currentState == Player.State.Move);
         m_combatMenu.SetActive(m_player.m_currentState == Player.State.Fight);
     }
-    public void UseAttack()
+    public void UseAttack(int i)
     {
-        m_player.m_activeCharacter.UseAttack(0);
+        m_player.m_activeCharacter.UseAttack(i);
     }
     public void SetActiveCharacter(Character character)
     {

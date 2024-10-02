@@ -6,12 +6,13 @@ public class Character : MonoBehaviour
 {
     [SerializeField] private float m_maxHp;
     [SerializeField] private float m_speed;
-    [SerializeField] private float m_damage;
     [SerializeField] private float m_resistance;
 
     public List<Attack> m_attacks = new();
 
     public Sprite m_ArenaSprite;
+
+    public LayerMask m_enemyLayers;
 
     private float m_currentHp = 0f;
     private float m_vel = 0f;
@@ -44,18 +45,42 @@ public class Character : MonoBehaviour
     }
     public void UseAttack(int i)
     {
-        m_animator.SetInteger("AttackIndex", i);
-        if (m_currentAttack == null) StartCoroutine(RunAttack(m_attacks[i]));
+        if (m_currentAttack == null)
+            StartCoroutine(RunAttack(m_attacks[i], i));
     }
-    private IEnumerator RunAttack(Attack a)
+    private IEnumerator RunAttack(Attack a, int i)
     {
-        m_currentAttack = a;
-        yield return new WaitForSeconds(a.m_durration * a.m_speedMulti);
-        m_currentAttack = null;
+        if (a.m_currentUses < a.m_maxUses)
+        {
+            m_animator.SetInteger("AttackIndex", i);
+            m_currentAttack = a;
+            a.m_currentUses++;
+            if (a.m_currentUses >= a.m_maxUses) StartCoroutine(a.Reset());
+            yield return new WaitForSeconds(a.m_clip.averageDuration * a.m_speedMulti);
+            m_currentAttack = null;
+            m_animator.SetInteger("AttackIndex", -1);
+            Collider[] cs = Physics.OverlapBox(transform.position + transform.forward, Vector3.one, Quaternion.identity, m_enemyLayers);
+            if (cs.Length > 0)
+            {
+                foreach (Collider c in cs)
+                {
+                    c.GetComponent<Character>().TakeDamage(a.m_damage);
+                }
+            }
+        }
     }
+    public void TakeDamage(float d)
+    {
+        m_currentHp -= d;
+        if (m_currentHp <= 0) Die();
+    }
+    private void Die()
+    {
+        m_currentHp = 0;
+    }
+    public bool IsMoving { get { return !m_agent.isStopped; } }
     public float Health { get { return m_currentHp; } set { m_currentHp -= value; } }
     public float Speed { get { return m_speed; } }
-    public float Damage { get { return m_damage; } }
     public float Resistance { get { return m_resistance; } }
 }
 [System.Serializable]
@@ -63,7 +88,13 @@ public class Attack
 {
     public float m_damage;
     public float m_speedMulti;
-    public float m_durration;
-    [SerializeField] private float m_maxUses;
+    public float m_resetTime;
+    public AnimationClip m_clip;
+    public float m_maxUses;
     public float m_currentUses;
+    public IEnumerator Reset()
+    {
+        yield return new WaitForSeconds(m_resetTime);
+        m_currentUses = 0;
+    }
 }

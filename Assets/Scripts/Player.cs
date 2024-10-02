@@ -22,6 +22,7 @@ public class Player : Singleton_template<Player>
 
     [SerializeField] private float m_distanceBetweenCharacters;
     [SerializeField] private List<Character> m_characters;
+    [SerializeField] private Transform m_moveTargetMarker;
 
     public Character m_activeCharacter;
     void Start()
@@ -74,6 +75,7 @@ public class Player : Singleton_template<Player>
 
                 m_characters[i].SetAgentTarget(new (x, hit.point.y, z));
             }
+            m_moveTargetMarker.position = new(hit.point.x, 0f, hit.point.z);
         }
     }
     private void MoveActiveOnClick()
@@ -81,6 +83,7 @@ public class Player : Singleton_template<Player>
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
         {
             m_activeCharacter.SetAgentTarget(hit.point);
+            m_moveTargetMarker.position = new(hit.point.x, 0f, hit.point.z);
         }
     }
     public List<Character> Characters { get { return m_characters; } }

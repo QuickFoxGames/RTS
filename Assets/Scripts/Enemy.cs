@@ -16,6 +16,7 @@ public class Enemy : MonoBehaviour
     {
         Wander,
         Seek,
+        Engage,
         Attack
     }
     private State m_currentState = State.Wander;
@@ -29,16 +30,41 @@ public class Enemy : MonoBehaviour
     }
     void Update()
     {
-        CheckForTarget();
+        if (m_currentState != State.Attack) CheckForTarget();
+        else if (!m_character.IsMoving)
+        {
+            /*if (isyourturn)*/
+            if (Vector3.Distance(transform.position, MoveToNearestPlayer()) < 0.5f)
+            {
+                m_character.SetAgentTarget(transform.position);
+                m_character.UseAttack((int)Random.Range(0f, m_character.m_attacks.Count - 1));
+            }
+        }
+    }
+    private Vector3 MoveToNearestPlayer()
+    {
+        float temp = Mathf.Infinity;
+        Vector3 pos = Vector3.zero;
+        foreach (Character c in m_player.Characters)
+        {
+            float d = Vector3.Distance(transform.position, c.transform.position);
+            if (d < temp)
+            {
+                temp = d;
+                pos = c.transform.position;
+            }
+        }
+        m_character.SetAgentTarget(pos);
+        return pos;
     }
     private void FixedUpdate()
     {
-        m_target = m_player.AveragePosition;
+        if (m_currentState != State.Attack) m_target = m_player.AveragePosition;
     }
     private void CheckForTarget()
     {
         Vector3 dist = m_target - transform.position;
-        if (dist.magnitude < m_attackDistance && Vector3.Dot(dist.normalized, transform.forward) < m_seekAngle) m_currentState = State.Attack;
+        if (dist.magnitude < m_attackDistance && Vector3.Dot(dist.normalized, transform.forward) < m_seekAngle) m_currentState = State.Engage;
         else if (dist.magnitude < m_seekDistance && Vector3.Dot(dist.normalized, transform.forward) < m_seekAngle) m_currentState = State.Seek;
         else m_currentState = State.Wander;
     }
@@ -46,7 +72,7 @@ public class Enemy : MonoBehaviour
     {
         yield return new WaitForSeconds(s);
         Vector3 dest = transform.position + Random.Range(m_seekDistance * 0.1f, m_seekDistance * 0.5f) * transform.forward + Random.Range(-m_seekDistance, m_seekDistance) * transform.right;
-        if (m_currentState == State.Attack) Attack();
+        if (m_currentState == State.Engage) Engage();
         else if (m_currentState == State.Wander)
         {
             m_character.SetAgentTarget(dest);
@@ -58,12 +84,13 @@ public class Enemy : MonoBehaviour
     {
         yield return new WaitForSeconds(s);
         m_character.SetAgentTarget(m_target);
-        if (m_currentState == State.Attack) Attack();
+        if (m_currentState == State.Engage) Engage();
         else if (m_currentState == State.Seek) StartCoroutine(NewSeekDestination(Vector3.Distance(transform.position, m_target) / (m_character.Speed * 4f)));
         else StartCoroutine(NewWanderDestination(0.1f));
     }
-    private void Attack()
+    private void Engage()
     {
         m_player.EnterArena(2);
+        m_currentState = State.Attack;
     }
 }
