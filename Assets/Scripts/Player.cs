@@ -83,7 +83,7 @@ public class Player : Singleton_template<Player>
         if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
         {
             m_activeCharacter.SetAgentTarget(hit.point);
-            m_moveTargetMarker.position = new(hit.point.x, 0f, hit.point.z);
+            if (m_moveTargetMarker) m_moveTargetMarker.position = new(hit.point.x, 0f, hit.point.z);
         }
     }
     public List<Character> Characters { get { return m_characters; } }
