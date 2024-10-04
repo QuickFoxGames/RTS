@@ -13,7 +13,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Bucket
-    second: {fileID: 2100000, guid: e6d7bd2ae39bfcb4390eda41ece74590, type: 2}
+    second: {fileID: 2100000, guid: 811203292fe0998458490c3ce7b88e1b, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
