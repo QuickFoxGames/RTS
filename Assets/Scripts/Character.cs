@@ -78,7 +78,14 @@ public class Character : MonoBehaviour
     {
         m_currentHp = 0;
     }
-    public bool IsMoving { get { return !m_agent.isStopped; } }
+    public bool IsMoving { get {
+            if (m_agent.pathPending) return false;
+            if (m_agent.remainingDistance > m_agent.stoppingDistance && m_agent.velocity.sqrMagnitude > 0.01f)
+            {
+                return true;
+            }
+            return false;
+        } }
     public float Health { get { return m_currentHp; } set { m_currentHp -= value; } }
     public float Speed { get { return m_speed; } }
     public float Resistance { get { return m_resistance; } }
@@ -88,13 +95,26 @@ public class Attack
 {
     public float m_damage;
     public float m_speedMulti;
-    public float m_resetTime;
+    public float m_resetTurns;
     public AnimationClip m_clip;
     public float m_maxUses;
     public float m_currentUses;
+    private int m_resetCount = 0;
+    public void UpdateAfterTurn()
+    {
+        if (m_currentUses == m_maxUses)
+        {
+            m_resetCount++;
+            if (m_resetCount == m_resetTurns)
+            {
+                m_resetCount = 0;
+                m_currentUses = 0;
+            }
+        }
+    }
     public IEnumerator Reset()
     {
-        yield return new WaitForSeconds(m_resetTime);
+        yield return new WaitForSeconds(m_resetTurns);
         m_currentUses = 0;
     }
 }

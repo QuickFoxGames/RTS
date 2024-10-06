@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 public class Arena : MonoBehaviour
 {
@@ -13,9 +14,12 @@ public class Arena : MonoBehaviour
     [SerializeField] private GameObject m_combatMenu;
 
     private Player m_player;
+    private GameManager m_gameManager;
     private void Start()
     {
         m_player = Player.Instance();
+        m_gameManager = GameManager.Instance();
+        m_gameManager.GenerateTurnOrder();
         //SetLayout();
         foreach (var character in m_player.Characters)
         {
@@ -51,6 +55,7 @@ public class Arena : MonoBehaviour
     public void UseAttack(int i)
     {
         m_player.m_activeCharacter.UseAttack(i);
+        m_gameManager.EndTurn();
     }
     public void SetActiveCharacter(Character character)
     {
@@ -61,5 +66,11 @@ public class Arena : MonoBehaviour
     public void ToggleMenu(GameObject menuToToggle)
     {
         menuToToggle.SetActive(!menuToToggle.activeInHierarchy);
+    }
+    public void ExitArena(int index)
+    {
+        m_player.m_currentState = Player.State.Explore;
+        // destroy enemies
+        SceneManager.LoadScene(index);
     }
 }

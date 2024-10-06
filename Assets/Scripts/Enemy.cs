@@ -1,17 +1,26 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 public class Enemy : MonoBehaviour
 {
+    [SerializeField] private int m_minCharacters;
+    [SerializeField] private int m_maxCharacters;
+
     [SerializeField] private float m_rotationSpeed;
     [SerializeField] private float m_angleMax;
     [SerializeField] private float m_seekDistance;
     [SerializeField] private float m_seekAngle;
     [SerializeField] private float m_attackDistance;
+    [SerializeField] private float m_distanceBetweenCharacters;
+
+    private float m_averageSpeed;
 
     private Vector3 m_target;
 
-    private Character m_character;
+    private Character m_activeCharacter;
+    private List<Character> m_characters = new();
     private Player m_player;
+    private GameManager m_gameManager;
     public enum State
     {
         Wander,
@@ -20,25 +29,55 @@ public class Enemy : MonoBehaviour
         Attack
     }
     private State m_currentState = State.Wander;
+    private void SpawnCharacters()
+    {
+        m_characters.Clear();
+        int n = (int) Random.Range(m_minCharacters, m_maxCharacters);
+        for (int i = 0; i < n; i++)
+        {
+            m_characters.Add(m_gameManager.GrabRandomCharacter());
+        }
+    }
     void Start()
     {
         m_player = Player.Instance();
-        m_character = GetComponent<Character>();
+        m_gameManager = GameManager.Instance();
         m_target = m_player.AveragePosition;
-        //SetRandomRotation();
+        SpawnCharacters();
+        foreach (Character character in m_characters)
+        {
+            m_averageSpeed += character.Speed;
+        }
+        m_averageSpeed /= m_characters.Count;
         StartCoroutine(NewWanderDestination(0.1f));
     }
     void Update()
     {
         if (m_currentState != State.Attack) CheckForTarget();
-        else if (!m_character.IsMoving)
+        else
         {
-            /*if (isyourturn)*/
-            if (Vector3.Distance(transform.position, MoveToNearestPlayer()) < 0.5f)
+            // Change for better AI combat
+            m_activeCharacter = m_characters[(int) Random.Range(0f, m_characters.Count)]; // Grabs a Random Character to do an action with
+            if (!m_activeCharacter.IsMoving)
             {
-                m_character.SetAgentTarget(transform.position);
-                m_character.UseAttack((int)Random.Range(0f, m_character.m_attacks.Count - 1));
+                if (!m_gameManager.m_turnOrder[m_gameManager.m_turnCount] && Vector3.Distance(transform.position, MoveToNearestPlayer()) < 0.5f)
+                {
+                    m_activeCharacter.SetAgentTarget(m_activeCharacter.transform.position);
+                    m_activeCharacter.UseAttack((int)Random.Range(0f, m_activeCharacter.m_attacks.Count - 1));
+                }
             }
+        }
+    }
+    private void MoveCharacters(Vector3 pos)
+    {
+        float angleStep = 360f / m_characters.Count;
+        for (int i = 0; i < m_characters.Count; i++)
+        {
+            float angleInRadians = Mathf.Deg2Rad * angleStep * i;
+            float x = pos.x + m_distanceBetweenCharacters * Mathf.Cos(angleInRadians);
+            float z = pos.z + m_distanceBetweenCharacters * Mathf.Sin(angleInRadians);
+
+            m_characters[i].SetAgentTarget(new(x, pos.y, z));
         }
     }
     private Vector3 MoveToNearestPlayer()
@@ -54,7 +93,7 @@ public class Enemy : MonoBehaviour
                 pos = c.transform.position;
             }
         }
-        m_character.SetAgentTarget(pos);
+        MoveCharacters(pos);
         return pos;
     }
     private void FixedUpdate()
@@ -75,22 +114,27 @@ public class Enemy : MonoBehaviour
         if (m_currentState == State.Engage) Engage();
         else if (m_currentState == State.Wander)
         {
-            m_character.SetAgentTarget(dest);
-            StartCoroutine(NewWanderDestination(Vector3.Distance(transform.position, dest) / (m_character.Speed * 2f)));
+            MoveCharacters(dest);
+            StartCoroutine(NewWanderDestination(Vector3.Distance(transform.position, dest) / (m_averageSpeed * 2f)));
         }
-        else StartCoroutine(NewSeekDestination(Vector3.Distance(transform.position, m_target) / (m_character.Speed * 4f)));
+        else StartCoroutine(NewSeekDestination(Vector3.Distance(transform.position, m_target) / (m_averageSpeed * 4f)));
     }
     private IEnumerator NewSeekDestination(float s)
     {
         yield return new WaitForSeconds(s);
-        m_character.SetAgentTarget(m_target);
+        MoveCharacters(m_target);
         if (m_currentState == State.Engage) Engage();
-        else if (m_currentState == State.Seek) StartCoroutine(NewSeekDestination(Vector3.Distance(transform.position, m_target) / (m_character.Speed * 4f)));
+        else if (m_currentState == State.Seek) StartCoroutine(NewSeekDestination(Vector3.Distance(transform.position, m_target) / (m_averageSpeed * 4f)));
         else StartCoroutine(NewWanderDestination(0.1f));
     }
     private void Engage()
     {
-        m_player.EnterArena(2);
+        foreach (Character c in m_characters)
+        {
+            DontDestroyOnLoad(c);
+        }
+        DontDestroyOnLoad(this);
         m_currentState = State.Attack;
+        m_player.EnterArena(2);
     }
 }
