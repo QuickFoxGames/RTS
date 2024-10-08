@@ -8,14 +8,13 @@ public class MainMenu : MonoBehaviour
 
     public void PlayGame()
     {
-        Invoke("LoadScene", 2);     
+        Invoke(nameof(LoadScene), 2);
     }
 
     public void LoadScene()
     {
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
     }
-
     public void QuitGame()
     {
         Debug.Log("Quit");

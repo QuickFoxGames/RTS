@@ -62,16 +62,16 @@ public class Character : MonoBehaviour
             yield return new WaitForSeconds(a.m_clip.averageDuration * a.m_speedMulti);
             m_currentAttack = null;
             m_animator.SetInteger("AttackIndex", -1);
-            Collider[] cs = Physics.OverlapBox(transform.position + transform.forward, Vector3.one, Quaternion.identity, m_enemyLayers);
+            /*Collider[] cs = Physics.OverlapBox(transform.position + transform.forward, Vector3.one, Quaternion.identity, m_enemyLayers);
             if (cs.Length > 0)
             {
                 foreach (Collider c in cs)
                 {
                     c.GetComponent<Character>().TakeDamage(a.m_damage);
                 }
-            }
+            }*/
+            m_gameManager.EndTurn();
         }
-        m_gameManager.EndTurn();
     }
     public void TakeDamage(float d)
     {

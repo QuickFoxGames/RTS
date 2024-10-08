@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -60,6 +59,7 @@ public class Player : Singleton_template<Player>
                 case State.Wait:
                     break;
                 case State.Fight:
+                    LookAtNearestEnemy();
                     break;
             }
         }
@@ -91,6 +91,22 @@ public class Player : Singleton_template<Player>
             m_activeCharacter.SetAgentTarget(hit.point);
             if (m_moveTargetMarker) m_moveTargetMarker.position = new(hit.point.x, 0f, hit.point.z);
         }
+    }
+    private void LookAtNearestEnemy()
+    {
+        float temp = Mathf.Infinity;
+        Vector3 dir = Vector3.zero;
+        List<Character> clist = FindObjectOfType<Enemy>().m_characters;
+        foreach (Character c in clist)
+        {
+            float d = Vector3.Distance(transform.position, c.transform.position);
+            if (d < temp)
+            {
+                temp = d;
+                dir = c.transform.position - transform.position;
+            }
+        }
+        m_activeCharacter.transform.forward = dir.normalized;
     }
     public List<Character> Characters { get { return m_characters; } }
     public Vector3 AveragePosition { get

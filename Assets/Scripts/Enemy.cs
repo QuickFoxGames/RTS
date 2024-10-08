@@ -17,8 +17,8 @@ public class Enemy : MonoBehaviour
 
     private Vector3 m_target;
 
-    private Character m_activeCharacter;
-    private List<Character> m_characters = new();
+    public Character m_activeCharacter;
+    public List<Character> m_characters = new();
     private Player m_player;
     private GameManager m_gameManager;
     public enum State
@@ -58,18 +58,16 @@ public class Enemy : MonoBehaviour
         {
             // Change for better AI combat
             if (!m_activeCharacter) m_activeCharacter = m_characters[(int)Random.Range(0f, m_characters.Count)]; // Grabs a Random Character to do an action with
-            else
+            else if (!m_gameManager.m_turnOrder[m_gameManager.m_turnCount])
             {
                 Vector3 nearestPos = GetNearestPlayer();
-                if (!m_activeCharacter.IsMoving && !m_gameManager.m_turnOrder[m_gameManager.m_turnCount] && Vector3.Distance(transform.position, nearestPos) < 1.5f)
+                if (!m_activeCharacter.IsMoving && Vector3.Distance(transform.position, nearestPos) < 1.5f)
                 {
                     m_activeCharacter.SetAgentTarget(m_activeCharacter.transform.position);
                     m_activeCharacter.UseAttack((int)Random.Range(0f, m_activeCharacter.m_attacks.Count - 1));
-                    m_gameManager.EndTurn();
                 }
                 else
                     m_activeCharacter.SetAgentTarget(nearestPos);
-                Debug.Log(!m_activeCharacter.IsMoving && !m_gameManager.m_turnOrder[m_gameManager.m_turnCount] && Vector3.Distance(transform.position, nearestPos) < 1.5f);
             }
         }
     }
@@ -89,6 +87,7 @@ public class Enemy : MonoBehaviour
     {
         float temp = Mathf.Infinity;
         Vector3 pos = Vector3.zero;
+        Vector3 dir = Vector3.zero;
         foreach (Character c in m_player.Characters)
         {
             float d = Vector3.Distance(transform.position, c.transform.position);
@@ -96,9 +95,11 @@ public class Enemy : MonoBehaviour
             {
                 temp = d;
                 pos = c.transform.position;
+                dir = transform.position - pos;
             }
         }
-        return pos;
+        m_activeCharacter.transform.forward = -dir.normalized;
+        return pos + dir.normalized;
     }
     private void FixedUpdate()
     {
@@ -136,13 +137,16 @@ public class Enemy : MonoBehaviour
         foreach (Character c in m_characters)
         {
             DontDestroyOnLoad(c);
+            c.SetAgentTarget(c.transform.position);
         }
         DontDestroyOnLoad(this);
         m_currentState = State.Attack;
-        foreach (Character c in m_characters)
-        {
-            c.SetAgentTarget(c.transform.position);
-        }
         m_player.EnterArena(2);
+    }
+    private IEnumerator FreezeForT(float t)
+    {
+        Time.timeScale = 0f;
+        yield return new WaitForSeconds(t);
+        Time.timeScale = 1f;
     }
 }

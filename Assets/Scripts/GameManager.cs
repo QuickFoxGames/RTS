@@ -38,7 +38,7 @@ public class GameManager : Singleton_template<GameManager>
         m_turnOrder = new bool[m_maxTurns];
         for (int i = 0; i < m_maxTurns; i++)
         {
-            m_turnOrder[i] = Random.Range(0f, 1f) > 0.5f;
+            m_turnOrder[i] = Random.Range(0f, 1f) >= 0.5f;
         }
         m_turnCount = 0;
     }
