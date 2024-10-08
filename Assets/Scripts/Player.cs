@@ -8,6 +8,7 @@ public class Player : Singleton_template<Player>
     {
         Explore,
         Select,
+        Wait,
         Move,
         Fight
     }
@@ -25,8 +26,11 @@ public class Player : Singleton_template<Player>
     [SerializeField] private Transform m_moveTargetMarker;
 
     public Character m_activeCharacter;
+
+    private GameManager m_gameManager;
     void Start()
     {
+        m_gameManager = GameManager.Instance();
         DontDestroyOnLoad(gameObject);
     }
     void Update()
@@ -49,9 +53,11 @@ public class Player : Singleton_template<Player>
                     MoveAllOnClick();
                     break;
                 case State.Move:
-                    MoveActiveOnClick();
+                    if (m_gameManager.m_turnOrder[m_gameManager.m_turnCount]) MoveActiveOnClick();
                     break;
                 case State.Select:
+                    break;
+                case State.Wait:
                     break;
                 case State.Fight:
                     break;

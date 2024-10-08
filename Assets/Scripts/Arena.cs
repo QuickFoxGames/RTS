@@ -54,6 +54,7 @@ public class Arena : MonoBehaviour
     }
     public void UseAttack(int i)
     {
+        if (!m_gameManager.m_turnOrder[m_gameManager.m_turnCount]) return;
         m_player.m_activeCharacter.UseAttack(i);
         m_gameManager.EndTurn();
     }

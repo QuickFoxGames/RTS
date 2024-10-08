@@ -21,8 +21,11 @@ public class Character : MonoBehaviour
 
     private Animator m_animator;
     private NavMeshAgent m_agent;
+
+    private GameManager m_gameManager;
     void Start()
     {
+        m_gameManager = GameManager.Instance();
         m_agent = GetComponent<NavMeshAgent>();
         m_animator = GetComponent<Animator>();
         m_agent.speed = m_speed;
@@ -68,6 +71,7 @@ public class Character : MonoBehaviour
                 }
             }
         }
+        m_gameManager.EndTurn();
     }
     public void TakeDamage(float d)
     {

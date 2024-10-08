@@ -57,14 +57,19 @@ public class Enemy : MonoBehaviour
         else
         {
             // Change for better AI combat
-            m_activeCharacter = m_characters[(int) Random.Range(0f, m_characters.Count)]; // Grabs a Random Character to do an action with
-            if (!m_activeCharacter.IsMoving)
+            if (!m_activeCharacter) m_activeCharacter = m_characters[(int)Random.Range(0f, m_characters.Count)]; // Grabs a Random Character to do an action with
+            else
             {
-                if (!m_gameManager.m_turnOrder[m_gameManager.m_turnCount] && Vector3.Distance(transform.position, MoveToNearestPlayer()) < 0.5f)
+                Vector3 nearestPos = GetNearestPlayer();
+                if (!m_activeCharacter.IsMoving && !m_gameManager.m_turnOrder[m_gameManager.m_turnCount] && Vector3.Distance(transform.position, nearestPos) < 1.5f)
                 {
                     m_activeCharacter.SetAgentTarget(m_activeCharacter.transform.position);
                     m_activeCharacter.UseAttack((int)Random.Range(0f, m_activeCharacter.m_attacks.Count - 1));
+                    m_gameManager.EndTurn();
                 }
+                else
+                    m_activeCharacter.SetAgentTarget(nearestPos);
+                Debug.Log(!m_activeCharacter.IsMoving && !m_gameManager.m_turnOrder[m_gameManager.m_turnCount] && Vector3.Distance(transform.position, nearestPos) < 1.5f);
             }
         }
     }
@@ -80,7 +85,7 @@ public class Enemy : MonoBehaviour
             m_characters[i].SetAgentTarget(new(x, pos.y, z));
         }
     }
-    private Vector3 MoveToNearestPlayer()
+    private Vector3 GetNearestPlayer()
     {
         float temp = Mathf.Infinity;
         Vector3 pos = Vector3.zero;
@@ -93,7 +98,6 @@ public class Enemy : MonoBehaviour
                 pos = c.transform.position;
             }
         }
-        MoveCharacters(pos);
         return pos;
     }
     private void FixedUpdate()
@@ -135,6 +139,10 @@ public class Enemy : MonoBehaviour
         }
         DontDestroyOnLoad(this);
         m_currentState = State.Attack;
+        foreach (Character c in m_characters)
+        {
+            c.SetAgentTarget(c.transform.position);
+        }
         m_player.EnterArena(2);
     }
 }
