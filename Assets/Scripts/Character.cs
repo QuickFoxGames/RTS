@@ -60,16 +60,9 @@ public class Character : MonoBehaviour
             a.m_currentUses++;
             if (a.m_currentUses >= a.m_maxUses) StartCoroutine(a.Reset());
             yield return new WaitForSeconds(a.m_clip.averageDuration * a.m_speedMulti);
+            if (m_gameManager.m_closestEnemy) m_gameManager.m_closestEnemy.TakeDamage(a.m_damage);
             m_currentAttack = null;
             m_animator.SetInteger("AttackIndex", -1);
-            /*Collider[] cs = Physics.OverlapBox(transform.position + transform.forward, Vector3.one, Quaternion.identity, m_enemyLayers);
-            if (cs.Length > 0)
-            {
-                foreach (Collider c in cs)
-                {
-                    c.GetComponent<Character>().TakeDamage(a.m_damage);
-                }
-            }*/
             m_gameManager.EndTurn();
         }
     }
@@ -77,10 +70,13 @@ public class Character : MonoBehaviour
     {
         m_currentHp -= d;
         if (m_currentHp <= 0) Die();
+        Debug.Log("Took: " + d + " Damage");
+        Debug.Log("Hp: " + m_currentHp);
     }
     private void Die()
     {
         m_currentHp = 0;
+        //m_gameManager.ReturnToMainGame();
     }
     public bool IsMoving { get {
             if (m_agent.pathPending) return false;

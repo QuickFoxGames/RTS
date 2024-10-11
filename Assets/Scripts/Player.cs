@@ -54,15 +54,10 @@ public class Player : Singleton_template<Player>
                 case State.Move:
                     if (m_gameManager.m_turnOrder[m_gameManager.m_turnCount]) MoveActiveOnClick();
                     break;
-                case State.Select:
-                    break;
-                case State.Wait:
-                    break;
-                case State.Fight:
-                    LookAtNearestEnemy();
-                    break;
             }
         }
+        if (m_currentState == State.Fight)
+                    m_gameManager.m_closestEnemy = LookAtNearestEnemy();
     }
     public void ChangeState(State state)
     {
@@ -92,21 +87,24 @@ public class Player : Singleton_template<Player>
             if (m_moveTargetMarker) m_moveTargetMarker.position = new(hit.point.x, 0f, hit.point.z);
         }
     }
-    private void LookAtNearestEnemy()
+    private Character LookAtNearestEnemy()
     {
         float temp = Mathf.Infinity;
         Vector3 dir = Vector3.zero;
         List<Character> clist = FindObjectOfType<Enemy>().m_characters;
+        Character closet = null;
         foreach (Character c in clist)
         {
-            float d = Vector3.Distance(transform.position, c.transform.position);
+            float d = Vector3.Distance(m_activeCharacter.transform.position, c.transform.position);
             if (d < temp)
             {
                 temp = d;
-                dir = c.transform.position - transform.position;
+                dir = c.transform.position - m_activeCharacter.transform.position;
+                closet = c;
             }
         }
         m_activeCharacter.transform.forward = dir.normalized;
+        return closet;
     }
     public List<Character> Characters { get { return m_characters; } }
     public Vector3 AveragePosition { get

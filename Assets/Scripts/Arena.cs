@@ -67,6 +67,18 @@ public class Arena : MonoBehaviour
     {
         menuToToggle.SetActive(!menuToToggle.activeInHierarchy);
     }
+    public void ResetPlayerTurn()
+    {
+        m_buttonParent.SetActive(false);
+        m_moveMenu.SetActive(false);
+        m_combatMenu.SetActive(false);
+        m_player.m_currentState = Player.State.Wait;
+    }
+    public void SetPlayerToSelect()
+    {
+        m_buttonParent.SetActive(true);
+        m_player.m_currentState = Player.State.Select;
+    }
     public void ExitArena(int index)
     {
         m_player.m_currentState = Player.State.Explore;

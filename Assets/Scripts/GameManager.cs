@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 public class GameManager : Singleton_template<GameManager>
 {
     [SerializeField] private int m_maxTurns = 100;
@@ -14,6 +15,8 @@ public class GameManager : Singleton_template<GameManager>
 
     public bool[] m_turnOrder = null;
     public int m_turnCount = 0;
+
+    public Character m_closestEnemy;
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
@@ -22,13 +25,13 @@ public class GameManager : Singleton_template<GameManager>
     {
         if (m_turnOrder.Length > 0)
         {
-            if (m_turnIndicator) m_turnIndicator.text = m_turnOrder[m_turnCount] ? "<color=#00FF00> Player Turn </color>" : "<color=#FF0000> Enemy Turn </color>";
+            if (m_turnIndicator) m_turnIndicator.text = m_turnOrder[m_turnCount] ? "<color=#0000FF> Player Turn </color>" : "<color=#FF0000> Enemy Turn </color>";
             if (m_turnsDisplay)
             {
                 Image[] images = m_turnsDisplay.GetComponentsInChildren<Image>();
                 for (int i = 0; i < images.Length; i++)
                 {
-                    images[i].color = m_turnOrder[m_turnCount + i] ? Color.green : Color.red;
+                    images[i].color = m_turnOrder[m_turnCount + i] ? Color.blue : Color.red;
                 }
             }
         }
@@ -44,11 +47,17 @@ public class GameManager : Singleton_template<GameManager>
     }
     public void EndTurn()
     {
+        if (m_turnOrder[m_turnCount]) FindObjectOfType<Arena>().ResetPlayerTurn();
+        if (!m_turnOrder[m_turnCount] || m_turnOrder[m_turnCount + 1 < m_maxTurns ? m_turnCount + 1 : 0]) FindObjectOfType<Arena>().SetPlayerToSelect();
         m_turnCount++;
         if (m_turnCount >= m_maxTurns) m_turnCount = 0;
     }
     public Character GrabRandomCharacter()
     {
         return m_possibleEnemies[(int) Random.Range(0f, m_possibleEnemies.Count)];
+    }
+    public void ReturnToMainGame()
+    {
+        SceneManager.LoadScene(1);
     }
 }

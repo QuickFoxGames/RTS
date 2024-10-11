@@ -1970,6 +1970,7 @@ MonoBehaviour:
   m_turnsDisplay: {fileID: 1802465498}
   m_turnOrder: 
   m_turnCount: 0
+  m_closestEnemy: {fileID: 0}
 --- !u!4 &637657210
 Transform:
   m_ObjectHideFlags: 0
@@ -3842,6 +3843,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 691814864047938134, guid: b9196758895852840ad7d26264128c05,
         type: 3}
+      propertyPath: m_ArenaSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9f80c413231347840ace5b4a06b5ed4f,
+        type: 3}
+    - target: {fileID: 691814864047938134, guid: b9196758895852840ad7d26264128c05,
+        type: 3}
       propertyPath: m_attacks.Array.size
       value: 4
       objectReference: {fileID: 0}
@@ -4651,6 +4658,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 691814864047938134, guid: b9196758895852840ad7d26264128c05,
         type: 3}
+      propertyPath: m_ArenaSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: d106f5292b2f7ab4185fd2ecde1967ea,
+        type: 3}
+    - target: {fileID: 691814864047938134, guid: b9196758895852840ad7d26264128c05,
+        type: 3}
       propertyPath: m_attacks.Array.size
       value: 4
       objectReference: {fileID: 0}
@@ -4883,6 +4896,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 5642698959681442628, guid: b9196758895852840ad7d26264128c05,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 2b3acecd5e258014caaca3bc409f849d, type: 2}
     - target: {fileID: 5768652343388739583, guid: b9196758895852840ad7d26264128c05,
         type: 3}
       propertyPath: m_Layer
@@ -5061,7 +5079,7 @@ PrefabInstance:
     - target: {fileID: 8935669684951611961, guid: b9196758895852840ad7d26264128c05,
         type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0
+      value: 1.38
       objectReference: {fileID: 0}
     - target: {fileID: 8935669684951611961, guid: b9196758895852840ad7d26264128c05,
         type: 3}
@@ -5098,6 +5116,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9061111432006827497, guid: b9196758895852840ad7d26264128c05,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 2b3acecd5e258014caaca3bc409f849d, type: 2}
     - target: {fileID: 9214467937337913333, guid: b9196758895852840ad7d26264128c05,
         type: 3}
       propertyPath: m_Layer
@@ -6018,6 +6041,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 691814864047938134, guid: b9196758895852840ad7d26264128c05,
         type: 3}
+      propertyPath: m_ArenaSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: d981329cc021e0741be46286e721b433,
+        type: 3}
+    - target: {fileID: 691814864047938134, guid: b9196758895852840ad7d26264128c05,
+        type: 3}
       propertyPath: m_attacks.Array.size
       value: 4
       objectReference: {fileID: 0}
@@ -6250,6 +6279,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 5642698959681442628, guid: b9196758895852840ad7d26264128c05,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 0d7015384ce8b534bb19f16360b8afb5, type: 2}
     - target: {fileID: 5768652343388739583, guid: b9196758895852840ad7d26264128c05,
         type: 3}
       propertyPath: m_Layer
@@ -6418,7 +6452,7 @@ PrefabInstance:
     - target: {fileID: 8935669684951611961, guid: b9196758895852840ad7d26264128c05,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -2.156
       objectReference: {fileID: 0}
     - target: {fileID: 8935669684951611961, guid: b9196758895852840ad7d26264128c05,
         type: 3}
@@ -6465,6 +6499,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9061111432006827497, guid: b9196758895852840ad7d26264128c05,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 0d7015384ce8b534bb19f16360b8afb5, type: 2}
     - target: {fileID: 9214467937337913333, guid: b9196758895852840ad7d26264128c05,
         type: 3}
       propertyPath: m_Layer
@@ -6944,6 +6983,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 8311124418635959110, guid: 9a1f8743963afd44d9b14ab7a30104e2,
+        type: 3}
+      propertyPath: m_maxHp
+      value: 10
       objectReference: {fileID: 0}
     - target: {fileID: 8311124418635959110, guid: 9a1f8743963afd44d9b14ab7a30104e2,
         type: 3}
@@ -8360,6 +8404,12 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 691814864047938134, guid: b9196758895852840ad7d26264128c05,
         type: 3}
+      propertyPath: m_ArenaSprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 57e0f0841927fe949bab82aca986e026,
+        type: 3}
+    - target: {fileID: 691814864047938134, guid: b9196758895852840ad7d26264128c05,
+        type: 3}
       propertyPath: m_attacks.Array.size
       value: 4
       objectReference: {fileID: 0}
@@ -8592,6 +8642,11 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 5642698959681442628, guid: b9196758895852840ad7d26264128c05,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f6b973d4fea73604592e775904d28498, type: 2}
     - target: {fileID: 5768652343388739583, guid: b9196758895852840ad7d26264128c05,
         type: 3}
       propertyPath: m_Layer
@@ -8760,7 +8815,7 @@ PrefabInstance:
     - target: {fileID: 8935669684951611961, guid: b9196758895852840ad7d26264128c05,
         type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: 1.209
       objectReference: {fileID: 0}
     - target: {fileID: 8935669684951611961, guid: b9196758895852840ad7d26264128c05,
         type: 3}
@@ -8807,6 +8862,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9061111432006827497, guid: b9196758895852840ad7d26264128c05,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: f6b973d4fea73604592e775904d28498, type: 2}
     - target: {fileID: 9214467937337913333, guid: b9196758895852840ad7d26264128c05,
         type: 3}
       propertyPath: m_Layer
