@@ -1922,6 +1922,7 @@ MonoBehaviour:
   m_maxHp: 0
   m_speed: 12
   m_resistance: 0
+  meleeSounds: []
   m_attacks: []
   m_ArenaSprite: {fileID: 0}
   m_enemyLayers:
@@ -4672,6 +4673,16 @@ PrefabInstance:
       propertyPath: m_enemyLayers.m_Bits
       value: 128
       objectReference: {fileID: 0}
+    - target: {fileID: 691814864047938134, guid: b9196758895852840ad7d26264128c05,
+        type: 3}
+      propertyPath: meleeSounds.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 691814864047938134, guid: b9196758895852840ad7d26264128c05,
+        type: 3}
+      propertyPath: meleeSounds.Array.data[0]
+      value: 
+      objectReference: {fileID: 8300000, guid: 46bb5535df1db334e98ae74b6a1a2fc7, type: 3}
     - target: {fileID: 691814864047938134, guid: b9196758895852840ad7d26264128c05,
         type: 3}
       propertyPath: m_attacks.Array.data[0].m_clip

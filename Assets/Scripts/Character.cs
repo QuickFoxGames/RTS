@@ -7,6 +7,7 @@ public class Character : MonoBehaviour
     [SerializeField] private float m_maxHp;
     [SerializeField] private float m_speed;
     [SerializeField] private float m_resistance;
+    [SerializeField] private AudioClip[] meleeSounds;
 
     public List<Attack> m_attacks = new();
 
@@ -23,6 +24,8 @@ public class Character : MonoBehaviour
     private NavMeshAgent m_agent;
 
     private GameManager m_gameManager;
+    private AudioSource attackSounds;
+
     void Start()
     {
         m_gameManager = GameManager.Instance();
@@ -31,6 +34,8 @@ public class Character : MonoBehaviour
         m_agent.speed = m_speed;
         m_agent.acceleration = m_speed * 2.285f;
         m_currentHp = m_maxHp;
+        attackSounds = GetComponent<AudioSource>();
+        
     }
     private void Update()
     {
@@ -58,9 +63,11 @@ public class Character : MonoBehaviour
             m_animator.SetInteger("AttackIndex", i);
             m_currentAttack = a;
             a.m_currentUses++;
+            attackSounds.clip = meleeSounds[(int)Random.Range(0f, meleeSounds.Length - 1f)];
+            attackSounds.Play();
             if (a.m_currentUses >= a.m_maxUses) StartCoroutine(a.Reset());
-            yield return new WaitForSeconds(a.m_clip.averageDuration * a.m_speedMulti);
-            if (m_gameManager.m_closestEnemy) m_gameManager.m_closestEnemy.TakeDamage(a.m_damage);
+            yield return new WaitForSeconds(a.m_clip.averageDuration * a.m_speedMulti);           
+            if (m_gameManager.m_closestEnemy) m_gameManager.m_closestEnemy.TakeDamage(a.m_damage); 
             m_currentAttack = null;
             m_animator.SetInteger("AttackIndex", -1);
             m_gameManager.EndTurn();
@@ -100,6 +107,7 @@ public class Attack
     public float m_maxUses;
     public float m_currentUses;
     private int m_resetCount = 0;
+    public AudioClip[] meleeSounds;
     public void UpdateAfterTurn()
     {
         if (m_currentUses == m_maxUses)
