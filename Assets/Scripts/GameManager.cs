@@ -20,6 +20,15 @@ public class GameManager : Singleton_template<GameManager>
     private void Start()
     {
         DontDestroyOnLoad(gameObject);
+        CreateTurnOrder();
+    }
+    private void CreateTurnOrder()
+    {
+        m_turnOrder = new bool[m_maxTurns];
+        for (int i = 0; i < m_maxTurns; i++)
+        {
+            m_turnOrder[i] = Random.Range(0, 2) == 0;
+        }
     }
     private void Update()
     {
