@@ -1,4 +1,51 @@
-using System.Collections;
+using UnityEngine;
+using UnityEngine.UI;
+public class Arena : MonoBehaviour
+{
+    [SerializeField] private GameObject m_buttonsParent;
+    [SerializeField] private GameObject m_moveMenu;
+    [SerializeField] private GameObject m_combatMenu;
+    ///////////////
+    private GameManager m_gameManager;
+    private void Start()
+    {
+        m_gameManager = GameManager.Instance();
+        foreach (Character c in m_gameManager.m_playerCharacters)
+        {
+            Vector3 temp = Vector3.zero;
+            c.transform.SetPositionAndRotation(temp, Quaternion.identity);
+            c.WarpAgentPosition(c.transform.position);
+            GameObject g = new()
+            {
+                name = c.name + "_Button"
+            };
+            g.transform.parent = m_buttonsParent.transform;
+            g.AddComponent<CanvasRenderer>();
+            Image im = g.AddComponent<Image>();
+            im.sprite = c.m_ArenaSprite;
+            Button b = g.AddComponent<Button>();
+            b.targetGraphic = im;
+            b.onClick.AddListener(() => SetActiveCharacter(c));
+        }
+    }
+    void Update()
+    {
+        m_buttonsParent.SetActive(m_gameManager.m_currentPlayerState == GameManager.State.Select);
+        m_moveMenu.SetActive(m_gameManager.m_currentPlayerState == GameManager.State.Move);
+        m_combatMenu.SetActive(m_gameManager.m_currentPlayerState == GameManager.State.Fight);
+    }
+    public void UseAttack(int i)
+    {
+        ///if (!m_gameManager.m_turnOrder[m_gameManager.m_turnCount]) return;
+        m_gameManager.m_playerCharacters[m_gameManager.m_activeCharacterIndex].UseAttack(i);
+    }
+    public void SetActiveCharacter(Character character)
+    {
+        m_gameManager.m_activeCharacterIndex = m_gameManager.m_playerCharacters.IndexOf(character);
+        m_gameManager.m_currentPlayerState = GameManager.State.Move;
+    }
+}
+/*using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -85,4 +132,4 @@ public class Arena : MonoBehaviour
         // destroy enemies
         SceneManager.LoadScene(index);
     }
-}
+}*/

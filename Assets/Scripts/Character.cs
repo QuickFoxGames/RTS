@@ -67,7 +67,7 @@ public class Character : MonoBehaviour
             attackSounds.Play();
             if (a.m_currentUses >= a.m_maxUses) StartCoroutine(a.Reset());
             yield return new WaitForSeconds(a.m_clip.averageDuration * a.m_speedMulti);           
-            if (m_gameManager.m_closestEnemy) m_gameManager.m_closestEnemy.TakeDamage(a.m_damage); 
+            if (m_gameManager.NearestEnemy) m_gameManager.NearestEnemy.TakeDamage(a.m_damage); 
             m_currentAttack = null;
             m_animator.SetInteger("AttackIndex", -1);
             m_gameManager.EndTurn();

@@ -1,7 +1,7 @@
-using System.Collections.Generic;
+/*using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-public class Player : Singleton_template<Player>
+public class TempPlayer : Singleton_template<TempPlayer>
 {
     public enum State
     {
@@ -126,4 +126,4 @@ public class Player : Singleton_template<Player>
         m_currentState = State.Select;
         SceneManager.LoadScene(index);
     }
-}
+}*/

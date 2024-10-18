@@ -1,7 +1,5 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-
 public class EnemySpawner : MonoBehaviour
 {
     [SerializeField] private int m_numEnemies;
@@ -10,15 +8,16 @@ public class EnemySpawner : MonoBehaviour
     ///////////////
     [SerializeField] private LayerMask m_playerLayers;
     ///////////////
-    [SerializeField] private TempEnemy m_enemyPrefab;
+    [SerializeField] private Enemy m_enemyPrefab;
     ///////////////
     private int m_enemyCount = 0;
     ///////////////
-    private TempGameManager m_gameManager;
+    private GameManager m_gameManager;
     ///////////////
     private void Start()
     {
-        m_gameManager = TempGameManager.Instance();
+        m_gameManager = GameManager.Instance();
+        StartCoroutine(SpawnEnemies());
     }
     ///////////////
     private void OnTriggerEnter(Collider other)
@@ -30,7 +29,7 @@ public class EnemySpawner : MonoBehaviour
     private IEnumerator SpawnEnemies()
     {
         yield return new WaitForSeconds(m_enemyCount > 0 ? m_timeBetweenSpawns : 0f);
-        m_gameManager.AddEnemyToList(Instantiate(m_enemyPrefab));
+        m_gameManager.AddEnemyToList(Instantiate(m_enemyPrefab, transform.position, Quaternion.identity));
         m_enemyCount++;
         if (m_enemyCount < m_numEnemies) StartCoroutine(SpawnEnemies());
     }

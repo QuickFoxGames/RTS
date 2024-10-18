@@ -1,142 +1,71 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 public class TempGameManager : Singleton_template<TempGameManager>
 {
-    public enum State
-    {
-        Explore,
-        Select,
-        Wait,
-        Move,
-        Fight
-    }
-    public State m_currentPlayerState = State.Explore;
-    public Vector3 AveragePlayerPosition;
-    ///////////////
-    [SerializeField] private float m_distanceBetweenCharacters;
-    [SerializeField] private float m_lookAtEnemySpeed;
-    ///////////////
-    [SerializeField] private List<Character> m_allCharacterPrefabs;
-    ///////////////
-    [SerializeField] private string m_saveData;
-    ///////////////
-    private int m_activeCharacterIndex = 0;
-    private List<Character> m_playerCharacters = new();
-    ///////////////
-    private List<TempEnemy> m_enemyList = new();
-    private TempEnemy m_currentEnemy;
-    private Character m_nearestEnemy;
-    ///////////////
-    private bool Mouse0;
-    private bool Mouse0Down;
-    private bool Mouse0Up;
-    ///////////////
-    private bool BackToSelect;
-    private bool EndMovePhase;
-    ///////////////
-    public void AddEnemyToList(TempEnemy e)
-    {
-        m_enemyList.Add(e);
-    }
-    ///////////////
-    void Start()
+    [SerializeField] private int m_maxTurns = 100;
+    [SerializeField] private float m_timePerTurn;
+
+    [SerializeField] private List<Character> m_possibleEnemies;
+
+    //[SerializeField] private TextMeshProUGUI m_turnIndicator;
+    [SerializeField] private Transform m_turnsDisplay;
+
+    public bool[] m_turnOrder = null;
+    public int m_turnCount = 0;
+
+    public Character m_closestEnemy;
+    private void Start()
     {
         DontDestroyOnLoad(gameObject);
-        if (m_saveData == "")
-            m_playerCharacters.Add(Instantiate(m_allCharacterPrefabs[0]));
-        else LoadSaveData();
+        CreateTurnOrder();
     }
-    ///////////////
-    public List<Character> AllCharacterPrefabs() { return m_allCharacterPrefabs; }
-    ///////////////
-    private void LoadSaveData() { }
-    ///////////////
-    void Update()
+    private void CreateTurnOrder()
     {
-        Mouse0 = Input.GetKey(KeyCode.Mouse0);
-        Mouse0Down = Input.GetKeyDown(KeyCode.Mouse0);
-        Mouse0Up = Input.GetKeyUp(KeyCode.Mouse0);
-        BackToSelect = Input.GetKey(KeyCode.E);
-        EndMovePhase = Input.GetKey(KeyCode.R);
-
-        if (BackToSelect && m_currentPlayerState != State.Fight) m_currentPlayerState = State.Select;
-        switch (m_currentPlayerState)
+        m_turnOrder = new bool[m_maxTurns];
+        for (int i = 0; i < m_maxTurns; i++)
         {
-            case State.Explore:
-                if (Mouse0Down) AveragePlayerPosition = MoveAllOnClick(); break;
-            case State.Move:
-                if (Mouse0Down) MoveCharacterOnClick(m_playerCharacters[m_activeCharacterIndex]);
-                if (EndMovePhase) m_currentPlayerState = State.Fight;
-                break;
-            case State.Fight:
-                m_nearestEnemy = GetNearestEnemy();
-                m_playerCharacters[m_activeCharacterIndex].transform.forward
-                    = Vector3.Slerp(m_playerCharacters[m_activeCharacterIndex].transform.forward,
-                    m_nearestEnemy.transform.position - m_playerCharacters[m_activeCharacterIndex].transform.position,
-                    m_lookAtEnemySpeed * Time.deltaTime);
-                break;
+            m_turnOrder[i] = Random.Range(0, 2) == 0;
         }
     }
-    ///////////////
-    public void ChangeState(State state)
+    private void Update()
     {
-        m_currentPlayerState = state;
-    }
-    // Movement Methods ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    #region Movement
-    private Vector3 MoveAllOnClick()
-    {
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
+        /*if (m_turnOrder.Length > 0)
         {
-            MoveAll(m_playerCharacters, hit.point);
-        }
-        return hit.point;
-    }
-    ///////////////
-    public void MoveAll(List<Character> characters, Vector3 pos)
-    {
-        float angleStep = 360f / characters.Count;
-        for (int i = 0; i < characters.Count; i++)
-        {
-            float angleInRadians = Mathf.Deg2Rad * angleStep * i;
-            float x = pos.x + m_distanceBetweenCharacters * characters.Count * Mathf.Cos(angleInRadians);
-            float z = pos.z + m_distanceBetweenCharacters * characters.Count * Mathf.Sin(angleInRadians);
-
-            characters[i].SetAgentTarget(new(x, pos.y, z));
-        }
-    }
-    ///////////////
-    private Vector3 MoveCharacterOnClick(Character c)
-    {
-        if (Physics.Raycast(Camera.main.ScreenPointToRay(Input.mousePosition), out RaycastHit hit))
-        {
-            c.SetAgentTarget(hit.point);
-            //if (m_moveTargetMarker) m_moveTargetMarker.position = new(hit.point.x, 0f, hit.point.z);
-        }
-        return hit.point;
-    }
-    #endregion
-    ///////////////
-    private Character GetNearestEnemy()
-    {
-        float temp = Mathf.Infinity;
-        Character closet = null;
-        foreach (Character c in m_currentEnemy.m_enemyCharacters)
-        {
-            float d = Vector3.Distance(m_playerCharacters[m_activeCharacterIndex].transform.position, c.transform.position);
-            if (d < temp)
+            if (m_turnIndicator) m_turnIndicator.text = m_turnOrder[m_turnCount] ? "<color=#0000FF> Player Turn </color>" : "<color=#FF0000> Enemy Turn </color>";
+            if (m_turnsDisplay)
             {
-                temp = d;
-                closet = c;
+                Image[] images = m_turnsDisplay.GetComponentsInChildren<Image>();
+                for (int i = 0; i < images.Length; i++)
+                {
+                    images[i].color = m_turnOrder[m_turnCount + i] ? Color.blue : Color.red;
+                }
             }
-        }
-        return closet;
+        }*/
     }
-    ///////////////
+    public void GenerateTurnOrder()
+    {
+        m_turnOrder = new bool[m_maxTurns];
+        for (int i = 0; i < m_maxTurns; i++)
+        {
+            m_turnOrder[i] = Random.Range(0f, 1f) >= 0.5f;
+        }
+        m_turnCount = 0;
+    }
     public void EndTurn()
     {
-        //m_turnCount++;
-        //if (m_turnCount >= m_maxTurns) m_turnCount = 0;
+        //if (m_turnOrder[m_turnCount]) FindObjectOfType<Arena>().ResetPlayerTurn();
+        //if (!m_turnOrder[m_turnCount] || m_turnOrder[m_turnCount + 1 < m_maxTurns ? m_turnCount + 1 : 0]) FindObjectOfType<Arena>().SetPlayerToSelect();
+        m_turnCount++;
+        if (m_turnCount >= m_maxTurns) m_turnCount = 0;
+    }
+    public Character GrabRandomCharacter()
+    {
+        return m_possibleEnemies[(int)Random.Range(0f, m_possibleEnemies.Count)];
+    }
+    public void ReturnToMainGame()
+    {
+        SceneManager.LoadScene(1);
     }
 }
