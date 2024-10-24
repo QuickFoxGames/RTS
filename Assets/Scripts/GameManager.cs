@@ -109,15 +109,18 @@ public class GameManager : Singleton_template<GameManager>
             case State.Explore:
                 if (Mouse0Down) MoveAllOnClick(); break;
             case State.Move:
-                if (Mouse0Down) MoveCharacterOnClick(m_playerCharacters[m_activeCharacterIndex]);
-                if (EndMovePhase) m_currentPlayerState = State.Fight;
+                if (Mouse0Down && m_turnOrder[m_turnIndex]) MoveCharacterOnClick(m_playerCharacters[m_activeCharacterIndex]);
+                if (EndMovePhase && m_turnOrder[m_turnIndex]) m_currentPlayerState = State.Fight;
                 break;
             case State.Fight:
-                NearestEnemy = GetNearestCharacter(m_currentEnemy.m_enemyCharacters, m_playerCharacters[m_activeCharacterIndex].transform.position);
-                m_playerCharacters[m_activeCharacterIndex].transform.forward
-                    = Vector3.Slerp(m_playerCharacters[m_activeCharacterIndex].transform.forward,
-                    NearestEnemy.transform.position - m_playerCharacters[m_activeCharacterIndex].transform.position,
-                    m_lookAtEnemySpeed * Time.deltaTime);
+                if (m_turnOrder[m_turnIndex])
+                {
+                    NearestEnemy = GetNearestCharacter(m_currentEnemy.m_enemyCharacters, m_playerCharacters[m_activeCharacterIndex].transform.position);
+                    m_playerCharacters[m_activeCharacterIndex].transform.forward
+                        = Vector3.Slerp(m_playerCharacters[m_activeCharacterIndex].transform.forward,
+                        NearestEnemy.transform.position - m_playerCharacters[m_activeCharacterIndex].transform.position,
+                        m_lookAtEnemySpeed * Time.deltaTime);
+                }
                 break;
         }
         ///////////////
@@ -193,14 +196,16 @@ public class GameManager : Singleton_template<GameManager>
     {
         m_turnIndex++;
         if (m_turnIndex >= 100) m_turnIndex = 0;
+        m_currentPlayerState = State.Select;
     }
-    public void EnterArena()
+    public void EnterArena(Enemy e)
     {
         foreach (Character c in m_playerCharacters)
         {
             DontDestroyOnLoad(c);
         }
         m_currentPlayerState = State.Select;
+        m_currentEnemy = e;
         SceneManager.LoadScene(2);
     }
     public void ExitArena()

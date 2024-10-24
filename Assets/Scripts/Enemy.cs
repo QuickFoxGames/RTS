@@ -142,6 +142,6 @@ public class Enemy : MonoBehaviour
         }
         DontDestroyOnLoad(this);
         m_currentState = State.Attack;
-        m_gameManager.EnterArena();
+        m_gameManager.EnterArena(this);
     }
 }

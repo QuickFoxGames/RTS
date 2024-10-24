@@ -41,8 +41,15 @@ public class Arena : MonoBehaviour
     }
     public void SetActiveCharacter(Character character)
     {
-        m_gameManager.m_activeCharacterIndex = m_gameManager.m_playerCharacters.IndexOf(character);
-        m_gameManager.m_currentPlayerState = GameManager.State.Move;
+        if (m_gameManager.m_turnOrder[m_gameManager.m_turnIndex])
+        {
+            m_gameManager.m_activeCharacterIndex = m_gameManager.m_playerCharacters.IndexOf(character);
+            m_gameManager.m_currentPlayerState = GameManager.State.Move;
+        }
+    }
+    public void ToggleMenu(GameObject menuToToggle)
+    {
+        menuToToggle.SetActive(!menuToToggle.activeInHierarchy);
     }
 }
 /*using System.Collections;
