@@ -73,7 +73,7 @@ public class Enemy : MonoBehaviour
                     if (dir.magnitude < 1.25f)
                     {
                         m_enemyCharacters[m_activeIndex].SetAgentTarget(m_enemyCharacters[m_activeIndex].transform.position);
-                        m_enemyCharacters[m_activeIndex].UseAttack((int)Random.Range(0f, m_enemyCharacters[m_activeIndex].m_attacks.Count - 1));
+                        m_enemyCharacters[m_activeIndex].UseAttack((int)Random.Range(0f, m_enemyCharacters[m_activeIndex].m_attacks.Count - 1), false);
                     }
                     else m_enemyCharacters[m_activeIndex].SetAgentTarget(((dir.magnitude - 1f) * dir) + m_enemyCharacters[m_activeIndex].transform.position);
                 }

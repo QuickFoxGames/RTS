@@ -33,11 +33,18 @@ public class Arena : MonoBehaviour
         m_buttonsParent.SetActive(m_gameManager.m_currentPlayerState == GameManager.State.Select);
         m_moveMenu.SetActive(m_gameManager.m_currentPlayerState == GameManager.State.Move);
         m_combatMenu.SetActive(m_gameManager.m_currentPlayerState == GameManager.State.Fight);
+        if (m_gameManager.m_currentPlayerState != GameManager.State.Fight)
+        {
+            m_combatMenu.transform.GetChild(0).gameObject.SetActive(true);
+            m_combatMenu.transform.GetChild(1).gameObject.SetActive(true);
+            m_combatMenu.transform.GetChild(2).gameObject.SetActive(false);
+            m_combatMenu.transform.GetChild(3).gameObject.SetActive(false);
+        }
     }
     public void UseAttack(int i)
     {
         ///if (!m_gameManager.m_turnOrder[m_gameManager.m_turnCount]) return;
-        m_gameManager.m_playerCharacters[m_gameManager.m_activeCharacterIndex].UseAttack(i);
+        m_gameManager.m_playerCharacters[m_gameManager.m_activeCharacterIndex].UseAttack(i, true);
     }
     public void SetActiveCharacter(Character character)
     {

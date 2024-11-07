@@ -51,12 +51,12 @@ public class Character : MonoBehaviour
     {
         m_agent.Warp(pos);
     }
-    public void UseAttack(int i)
+    public void UseAttack(int i, bool isPlayer)
     {
         if (m_currentAttack == null)
-            StartCoroutine(RunAttack(m_attacks[i], i));
+            StartCoroutine(RunAttack(m_attacks[i], i, isPlayer));
     }
-    private IEnumerator RunAttack(Attack a, int i)
+    private IEnumerator RunAttack(Attack a, int i, bool isPlayer)
     {
         if (a.m_currentUses < a.m_maxUses)
         {
@@ -66,8 +66,9 @@ public class Character : MonoBehaviour
             attackSounds.clip = meleeSounds[(int)Random.Range(0f, meleeSounds.Length - 1f)];
             attackSounds.Play();
             if (a.m_currentUses >= a.m_maxUses) StartCoroutine(a.Reset());
-            yield return new WaitForSeconds(a.m_clip.averageDuration * a.m_speedMulti);           
-            if (m_gameManager.NearestEnemy) m_gameManager.NearestEnemy.TakeDamage(a.m_damage); 
+            yield return new WaitForSeconds(a.m_clip.averageDuration * a.m_speedMulti);
+            if (isPlayer) m_gameManager.NearestEnemy.TakeDamage(a.m_damage);
+            else m_gameManager.GetNearestCharacter(m_gameManager.m_playerCharacters, transform.position).TakeDamage(a.m_damage);
             m_currentAttack = null;
             m_animator.SetInteger("AttackIndex", -1);
             m_gameManager.EndTurn();
@@ -77,8 +78,7 @@ public class Character : MonoBehaviour
     {
         m_currentHp -= d;
         if (m_currentHp <= 0) Die();
-        Debug.Log("Took: " + d + " Damage");
-        Debug.Log("Hp: " + m_currentHp);
+        Debug.Log(gameObject.name + ":\nTook: " + d + " Damage " + "Hp: " + m_currentHp);
     }
     private void Die()
     {
