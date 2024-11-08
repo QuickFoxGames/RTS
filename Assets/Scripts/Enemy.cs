@@ -96,6 +96,7 @@ public class Enemy : MonoBehaviour
                     m_activeCharacter.SetAgentTarget(nearestPos);
             }
         }*/
+        CheckForEndOfBattle();
     }
     ///////////////
     private void CheckForEndOfBattle()

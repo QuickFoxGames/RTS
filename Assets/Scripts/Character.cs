@@ -60,11 +60,13 @@ public class Character : MonoBehaviour
     {
         if (a.m_currentUses < a.m_maxUses)
         {
-            m_animator.SetInteger("AttackIndex", i);
             m_currentAttack = a;
+            m_animator.SetInteger("AttackIndex", i);
             a.m_currentUses++;
             attackSounds.clip = meleeSounds[(int)Random.Range(0f, meleeSounds.Length - 1f)];
             attackSounds.Play();
+            GameObject temp = new();
+            if (a.VFX) temp = Instantiate(a.VFX, transform.position, transform.rotation);
             if (a.m_currentUses >= a.m_maxUses) StartCoroutine(a.Reset());
             yield return new WaitForSeconds(a.m_clip.averageDuration * a.m_speedMulti);
             if (isPlayer) m_gameManager.NearestEnemy.TakeDamage(a.m_damage);
@@ -72,6 +74,7 @@ public class Character : MonoBehaviour
             m_currentAttack = null;
             m_animator.SetInteger("AttackIndex", -1);
             m_gameManager.EndTurn();
+            Destroy(temp);
         }
     }
     public void TakeDamage(float d)
@@ -108,7 +111,8 @@ public class Attack
     public float m_currentUses;
     private int m_resetCount = 0;
     public AudioClip[] meleeSounds;
-    public void UpdateAfterTurn()
+    public GameObject VFX;
+    public void UpdateAfterUse()
     {
         if (m_currentUses == m_maxUses)
         {

@@ -584,7 +584,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cda2b2d87afc1c942a9897e99562af91, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_maxHp: 10
+  m_maxHp: 100
   m_speed: 3.5
   m_resistance: 0
   meleeSounds:
@@ -598,10 +598,11 @@ MonoBehaviour:
     m_maxUses: 3
     m_currentUses: 0
     meleeSounds: []
+    VFX: {fileID: 0}
   m_ArenaSprite: {fileID: 0}
   m_enemyLayers:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 0
 --- !u!82 &4861666269350759234
 AudioSource:
   m_ObjectHideFlags: 0

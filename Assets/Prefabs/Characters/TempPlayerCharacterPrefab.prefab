@@ -620,6 +620,7 @@ MonoBehaviour:
     m_maxUses: 3
     m_currentUses: 0
     meleeSounds: []
+    VFX: {fileID: 0}
   - m_damage: 25
     m_speedMulti: 1
     m_resetTurns: 0
@@ -628,6 +629,7 @@ MonoBehaviour:
     m_maxUses: 2
     m_currentUses: 0
     meleeSounds: []
+    VFX: {fileID: 0}
   - m_damage: 50
     m_speedMulti: 1
     m_resetTurns: 0
@@ -636,6 +638,7 @@ MonoBehaviour:
     m_maxUses: 1
     m_currentUses: 0
     meleeSounds: []
+    VFX: {fileID: 0}
   - m_damage: 15
     m_speedMulti: 1
     m_resetTurns: 0
@@ -644,10 +647,11 @@ MonoBehaviour:
     m_maxUses: 6
     m_currentUses: 0
     meleeSounds: []
+    VFX: {fileID: 7022875451347384031, guid: ac406ab16f138a04b856624cbb0c7676, type: 3}
   m_ArenaSprite: {fileID: 21300000, guid: d106f5292b2f7ab4185fd2ecde1967ea, type: 3}
   m_enemyLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 0
 --- !u!82 &1030843660094867557
 AudioSource:
   m_ObjectHideFlags: 0
