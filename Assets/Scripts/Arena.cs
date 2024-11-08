@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 public class Arena : MonoBehaviour
@@ -5,6 +6,8 @@ public class Arena : MonoBehaviour
     [SerializeField] private GameObject m_buttonsParent;
     [SerializeField] private GameObject m_moveMenu;
     [SerializeField] private GameObject m_combatMenu;
+    [SerializeField] private List<Transform> m_playerSpawns;
+    [SerializeField] private List<Transform> m_enemySpawns;
     ///////////////
     private GameManager m_gameManager;
     private void Start()
@@ -12,8 +15,9 @@ public class Arena : MonoBehaviour
         m_gameManager = GameManager.Instance();
         foreach (Character c in m_gameManager.m_playerCharacters)
         {
-            Vector3 temp = Vector3.zero;
-            c.transform.SetPositionAndRotation(temp, Quaternion.identity);
+            var temp = m_playerSpawns[Random.Range(0, m_playerSpawns.Count)];
+            m_playerSpawns.Remove(temp);
+            c.transform.SetPositionAndRotation(temp.position, Quaternion.identity);
             c.WarpAgentPosition(c.transform.position);
             GameObject g = new()
             {
@@ -26,6 +30,13 @@ public class Arena : MonoBehaviour
             Button b = g.AddComponent<Button>();
             b.targetGraphic = im;
             b.onClick.AddListener(() => SetActiveCharacter(c));
+        }
+        foreach (Character c in m_gameManager.m_currentEnemy.m_enemyCharacters)
+        {
+            var temp = m_enemySpawns[Random.Range(0, m_playerSpawns.Count)];
+            m_enemySpawns.Remove(temp);
+            c.transform.SetPositionAndRotation(temp.position, Quaternion.identity);
+            c.WarpAgentPosition(c.transform.position);
         }
     }
     void Update()

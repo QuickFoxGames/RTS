@@ -38,7 +38,7 @@ public class GameManager : Singleton_template<GameManager>
     public List<Character> m_playerCharacters = new();
     ///////////////
     private List<Enemy> m_enemyList = new();
-    private Enemy m_currentEnemy;
+    public Enemy m_currentEnemy;
     public Character NearestEnemy { get; private set; }
     ///////////////
     public bool Mouse0 { get; private set; }
