@@ -176,6 +176,7 @@ MonoBehaviour:
   - {fileID: 4616783634518829324, guid: a855ffbc282f01a4e86958699538dfae, type: 3}
   - {fileID: 56162497436943583, guid: 0a0defb6e27b7b3439c176338469bd8d, type: 3}
   m_saveData: 
+  m_turnsDisplay: {fileID: 0}
   m_activeCharacterIndex: 0
   m_playerCharacters: []
   m_cameraCtrl: {fileID: 0}
@@ -297,7 +298,7 @@ Transform:
   m_GameObject: {fileID: 1000379043}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -500.5, y: 0, z: -500.5}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
