@@ -67,6 +67,8 @@ public class Character : MonoBehaviour
             attackSounds.Play();
             GameObject temp = new();
             if (a.VFX) temp = Instantiate(a.VFX, transform.position, transform.rotation);
+            if (a.m_moveVFX) StartCoroutine(MoveVFX(temp.transform, transform.position + a.m_vfxOffset, 
+                m_gameManager.m_currentEnemy.m_enemyCharacters[m_gameManager.m_currentEnemy.m_activeIndex].transform.position, a.m_timeOffset, (a.m_clip.averageDuration * a.m_speedMulti) - a.m_timeOffset));
             if (a.m_currentUses >= a.m_maxUses) StartCoroutine(a.Reset());
             yield return new WaitForSeconds(a.m_clip.averageDuration * a.m_speedMulti);
             if (isPlayer) m_gameManager.NearestEnemy.TakeDamage(a.m_damage);
@@ -75,6 +77,16 @@ public class Character : MonoBehaviour
             m_animator.SetInteger("AttackIndex", -1);
             m_gameManager.EndTurn();
             Destroy(temp);
+        }
+    }
+    private IEnumerator MoveVFX(Transform t, Vector3 start, Vector3 end, float offset, float durration)
+    {
+        float time = 0f;
+        while (time < durration)
+        {
+            time += Time.deltaTime;
+            if (time >= offset) t.position = Vector3.Slerp(start, end, durration / (time - offset));
+            yield return null;
         }
     }
     public void TakeDamage(float d)
@@ -111,6 +123,9 @@ public class Attack
     public float m_currentUses;
     private int m_resetCount = 0;
     public AudioClip[] meleeSounds;
+    public bool m_moveVFX;
+    public float m_timeOffset;
+    public Vector3 m_vfxOffset;
     public GameObject VFX;
     public void UpdateAfterUse()
     {

@@ -21,7 +21,7 @@ public class Enemy : MonoBehaviour
     ///////////////
     [SerializeField] private int[] m_indexes;
     ///////////////
-    private int m_activeIndex = 0;
+    public int m_activeIndex = 0;
     ///////////////
     private float m_averageSpeed;
     ///////////////

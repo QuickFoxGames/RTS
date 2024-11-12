@@ -5129,7 +5129,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &418449793
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -5443,7 +5443,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!199 &1581970435
 ParticleSystemRenderer:
   serializedVersion: 6
@@ -20309,6 +20309,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: FireBall
+      objectReference: {fileID: 0}
+    - target: {fileID: 7022875451347384031, guid: ac406ab16f138a04b856624cbb0c7676,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8010243913384224618, guid: ac406ab16f138a04b856624cbb0c7676,
         type: 3}

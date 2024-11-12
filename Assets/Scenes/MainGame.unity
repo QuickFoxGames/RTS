@@ -340,12 +340,13 @@ MonoBehaviour:
   m_distanceBetweenCharacters: 0.4
   m_lookAtEnemySpeed: 3
   m_allCharacterPrefabs:
-  - {fileID: 4616783634518829324, guid: a855ffbc282f01a4e86958699538dfae, type: 3}
+  - {fileID: 5270929737861270870, guid: 5cf6ce9c75e91214f8e329afd5774290, type: 3}
   - {fileID: 56162497436943583, guid: 0a0defb6e27b7b3439c176338469bd8d, type: 3}
   m_saveData: 
   m_turnsDisplay: {fileID: 1802465497}
   m_activeCharacterIndex: 0
   m_playerCharacters: []
+  m_currentEnemy: {fileID: 0}
   m_cameraCtrl: {fileID: 0}
 --- !u!4 &637657210
 Transform:
@@ -455,7 +456,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!135 &704708579
 SphereCollider:
   m_ObjectHideFlags: 0

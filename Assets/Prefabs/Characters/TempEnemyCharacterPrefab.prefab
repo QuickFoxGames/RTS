@@ -598,6 +598,9 @@ MonoBehaviour:
     m_maxUses: 3
     m_currentUses: 0
     meleeSounds: []
+    m_moveVFX: 0
+    m_timeOffset: 0
+    m_vfxOffset: {x: 0, y: 0, z: 0}
     VFX: {fileID: 0}
   m_ArenaSprite: {fileID: 0}
   m_enemyLayers:
