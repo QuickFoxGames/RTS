@@ -259,8 +259,7 @@ MonoBehaviour:
   m_maxHp: 100
   m_speed: 6
   m_resistance: 0
-  meleeSounds:
-  - {fileID: 8300000, guid: 46bb5535df1db334e98ae74b6a1a2fc7, type: 3}
+  attackSoundHub: {fileID: 2904804359304679088}
   m_attacks:
   - m_damage: 10
     m_speedMulti: 1
@@ -274,6 +273,7 @@ MonoBehaviour:
     m_timeOffset: 0
     m_vfxOffset: {x: 0, y: 0, z: 0}
     VFX: {fileID: 0}
+    m_attackSounds: {fileID: 8300000, guid: 748a207786764af46bbdd4f99dc95c2b, type: 3}
   - m_damage: 25
     m_speedMulti: 1
     m_resetTurns: 0
@@ -286,6 +286,7 @@ MonoBehaviour:
     m_timeOffset: 0
     m_vfxOffset: {x: 0, y: 0, z: 0}
     VFX: {fileID: 0}
+    m_attackSounds: {fileID: 0}
   - m_damage: 50
     m_speedMulti: 1
     m_resetTurns: 0
@@ -298,6 +299,7 @@ MonoBehaviour:
     m_timeOffset: 0
     m_vfxOffset: {x: 0, y: 0, z: 0}
     VFX: {fileID: 0}
+    m_attackSounds: {fileID: 0}
   - m_damage: 15
     m_speedMulti: 1
     m_resetTurns: 0
@@ -310,6 +312,7 @@ MonoBehaviour:
     m_timeOffset: 0.25
     m_vfxOffset: {x: 0, y: 1, z: 0}
     VFX: {fileID: 7022875451347384031, guid: ac406ab16f138a04b856624cbb0c7676, type: 3}
+    m_attackSounds: {fileID: 8300000, guid: c5f990b4f10a16641b2c8bc20638db08, type: 3}
   m_ArenaSprite: {fileID: 21300000, guid: d106f5292b2f7ab4185fd2ecde1967ea, type: 3}
   m_enemyLayers:
     serializedVersion: 2
@@ -533,6 +536,11 @@ PrefabInstance:
         type: 3}
       propertyPath: ShapeModule.type
       value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 1933746281439204648, guid: 986e375734043bb4fb92f34d02032a8e,
+        type: 3}
+      propertyPath: ShapeModule.radiusThickness
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1933746281439204648, guid: 986e375734043bb4fb92f34d02032a8e,
         type: 3}

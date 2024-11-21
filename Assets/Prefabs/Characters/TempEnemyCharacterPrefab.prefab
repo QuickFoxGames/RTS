@@ -587,8 +587,7 @@ MonoBehaviour:
   m_maxHp: 100
   m_speed: 3.5
   m_resistance: 0
-  meleeSounds:
-  - {fileID: 8300000, guid: 46bb5535df1db334e98ae74b6a1a2fc7, type: 3}
+  attackSoundHub: {fileID: 4861666269350759234}
   m_attacks:
   - m_damage: 10
     m_speedMulti: 1
@@ -602,6 +601,7 @@ MonoBehaviour:
     m_timeOffset: 0
     m_vfxOffset: {x: 0, y: 0, z: 0}
     VFX: {fileID: 0}
+    m_attackSounds: {fileID: 8300000, guid: 748a207786764af46bbdd4f99dc95c2b, type: 3}
   m_ArenaSprite: {fileID: 0}
   m_enemyLayers:
     serializedVersion: 2

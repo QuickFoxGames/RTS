@@ -7,7 +7,7 @@ public class Character : MonoBehaviour
     [SerializeField] private float m_maxHp;
     [SerializeField] private float m_speed;
     [SerializeField] private float m_resistance;
-    [SerializeField] private AudioClip[] meleeSounds;
+    [SerializeField] private AudioSource attackSoundHub;
 
     public List<Attack> m_attacks = new();
 
@@ -24,7 +24,7 @@ public class Character : MonoBehaviour
     private NavMeshAgent m_agent;
 
     private GameManager m_gameManager;
-    private AudioSource attackSounds;
+    
 
     void Start()
     {
@@ -34,7 +34,7 @@ public class Character : MonoBehaviour
         m_agent.speed = m_speed;
         m_agent.acceleration = m_speed * 2.285f;
         m_currentHp = m_maxHp;
-        attackSounds = GetComponent<AudioSource>();
+        //attackSounds = GetComponent<AudioSource>();
         
     }
     private void Update()
@@ -63,8 +63,10 @@ public class Character : MonoBehaviour
             m_currentAttack = a;
             m_animator.SetInteger("AttackIndex", i);
             a.m_currentUses++;
-            attackSounds.clip = meleeSounds[(int)Random.Range(0f, meleeSounds.Length - 1f)];
-            attackSounds.Play();
+            //attackSounds.clip = meleeSounds[(int)Random.Range(0f, meleeSounds.Length - 1f)];
+            //attackSounds.Play();
+            attackSoundHub.clip = a.m_attackSounds;
+            attackSoundHub.Play();
             GameObject temp = new();
             if (a.VFX) temp = Instantiate(a.VFX, transform.position, transform.rotation);
             if (a.m_moveVFX) StartCoroutine(MoveVFX(temp.transform, transform.position + a.m_vfxOffset, 
@@ -127,6 +129,7 @@ public class Attack
     public float m_timeOffset;
     public Vector3 m_vfxOffset;
     public GameObject VFX;
+    public AudioClip m_attackSounds;
     public void UpdateAfterUse()
     {
         if (m_currentUses == m_maxUses)
