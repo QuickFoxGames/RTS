@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using MGUtilities;
 public class Character : MonoBehaviour
 {
     [SerializeField] private float m_maxHp;
@@ -68,11 +69,18 @@ public class Character : MonoBehaviour
             attackSoundHub.clip = a.m_attackSounds;
             attackSoundHub.Play();
             GameObject temp = new();
-            if (a.VFX) temp = Instantiate(a.VFX, transform.position, transform.rotation);
-            if (a.m_moveVFX) StartCoroutine(MoveVFX(temp.transform, transform.position + a.m_vfxOffset, 
-                m_gameManager.m_currentEnemy.m_enemyCharacters[m_gameManager.m_currentEnemy.m_activeIndex].transform.position, a.m_timeOffset, (a.m_clip.averageDuration * a.m_speedMulti) - a.m_timeOffset));
+            float totalWaitTime = a.m_clip.averageDuration / a.m_speedMulti;
+            if (a.VFX)
+            {
+                if (a.m_moveVFX)
+                {
+                    StartCoroutine(DelayMoveVFX(a, totalWaitTime - a.m_timeOffset - 0.1f));
+                }else temp = Instantiate(a.VFX, transform.position + a.m_vfxOffset, transform.rotation);
+            }
+            
             if (a.m_currentUses >= a.m_maxUses) StartCoroutine(a.Reset());
-            yield return new WaitForSeconds(a.m_clip.averageDuration * a.m_speedMulti);
+
+            yield return new WaitForSeconds(totalWaitTime);
             if (isPlayer) m_gameManager.NearestEnemy.TakeDamage(a.m_damage);
             else m_gameManager.GetNearestCharacter(m_gameManager.m_playerCharacters, transform.position).TakeDamage(a.m_damage);
             m_currentAttack = null;
@@ -81,15 +89,15 @@ public class Character : MonoBehaviour
             Destroy(temp);
         }
     }
-    private IEnumerator MoveVFX(Transform t, Vector3 start, Vector3 end, float offset, float durration)
+    private IEnumerator DelayMoveVFX(Attack a, float totalTime)
     {
-        float time = 0f;
-        while (time < durration)
-        {
-            time += Time.deltaTime;
-            if (time >= offset) t.position = Vector3.Slerp(start, end, durration / (time - offset));
-            yield return null;
-        }
+        Debug.Log(totalTime);
+        yield return new WaitForSeconds(a.m_timeOffset);
+        GameObject temp = Instantiate(a.VFX, transform.position + a.m_vfxOffset, transform.rotation);
+        StartCoroutine(Coroutines.LerpVector3OverTime(temp.transform.position + a.m_vfxOffset,
+                        m_gameManager.m_currentEnemy.m_enemyCharacters[m_gameManager.m_currentEnemy.m_activeIndex].transform.position + a.m_vfxOffset,
+                        totalTime, value => temp.transform.position = value));
+        Destroy(temp, totalTime + 0.1f);
     }
     public void TakeDamage(float d)
     {

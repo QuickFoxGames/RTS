@@ -309,7 +309,7 @@ MonoBehaviour:
     m_currentUses: 0
     meleeSounds: []
     m_moveVFX: 1
-    m_timeOffset: 0.25
+    m_timeOffset: 1.5
     m_vfxOffset: {x: 0, y: 1, z: 0}
     VFX: {fileID: 7022875451347384031, guid: ac406ab16f138a04b856624cbb0c7676, type: 3}
     m_attackSounds: {fileID: 8300000, guid: c5f990b4f10a16641b2c8bc20638db08, type: 3}
@@ -551,6 +551,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: GreenMist (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4493417042731776605, guid: 986e375734043bb4fb92f34d02032a8e,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5957154972554972640, guid: 986e375734043bb4fb92f34d02032a8e,
         type: 3}
