@@ -274,6 +274,7 @@ MonoBehaviour:
     m_vfxOffset: {x: 0, y: 0, z: 0}
     VFX: {fileID: 0}
     m_attackSounds: {fileID: 8300000, guid: 748a207786764af46bbdd4f99dc95c2b, type: 3}
+    m_attackHitSounds: {fileID: 0}
   - m_damage: 25
     m_speedMulti: 1
     m_resetTurns: 0
@@ -287,6 +288,7 @@ MonoBehaviour:
     m_vfxOffset: {x: 0, y: 0, z: 0}
     VFX: {fileID: 0}
     m_attackSounds: {fileID: 0}
+    m_attackHitSounds: {fileID: 0}
   - m_damage: 50
     m_speedMulti: 1
     m_resetTurns: 0
@@ -300,6 +302,7 @@ MonoBehaviour:
     m_vfxOffset: {x: 0, y: 0, z: 0}
     VFX: {fileID: 0}
     m_attackSounds: {fileID: 0}
+    m_attackHitSounds: {fileID: 0}
   - m_damage: 15
     m_speedMulti: 1
     m_resetTurns: 0
@@ -312,7 +315,8 @@ MonoBehaviour:
     m_timeOffset: 1.5
     m_vfxOffset: {x: 0, y: 1, z: 0}
     VFX: {fileID: 7022875451347384031, guid: ac406ab16f138a04b856624cbb0c7676, type: 3}
-    m_attackSounds: {fileID: 8300000, guid: c5f990b4f10a16641b2c8bc20638db08, type: 3}
+    m_attackSounds: {fileID: 8300000, guid: 57f8ba084848bf243a85416a87b9871e, type: 3}
+    m_attackHitSounds: {fileID: 8300000, guid: 33eb040f98ff05645b7e98680895b306, type: 3}
   m_ArenaSprite: {fileID: 21300000, guid: d106f5292b2f7ab4185fd2ecde1967ea, type: 3}
   m_enemyLayers:
     serializedVersion: 2

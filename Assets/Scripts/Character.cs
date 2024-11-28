@@ -68,6 +68,8 @@ public class Character : MonoBehaviour
             //attackSounds.Play();
             attackSoundHub.clip = a.m_attackSounds;
             attackSoundHub.Play();
+            
+            
             GameObject temp = new();
             float totalWaitTime = a.m_clip.averageDuration / a.m_speedMulti;
             if (a.VFX)
@@ -77,12 +79,17 @@ public class Character : MonoBehaviour
                     StartCoroutine(DelayMoveVFX(a, totalWaitTime - a.m_timeOffset - 0.1f));
                 }else temp = Instantiate(a.VFX, transform.position + a.m_vfxOffset, transform.rotation);
             }
-            
+
             if (a.m_currentUses >= a.m_maxUses) StartCoroutine(a.Reset());
 
             yield return new WaitForSeconds(totalWaitTime);
             if (isPlayer) m_gameManager.NearestEnemy.TakeDamage(a.m_damage);
             else m_gameManager.GetNearestCharacter(m_gameManager.m_playerCharacters, transform.position).TakeDamage(a.m_damage);
+            if (a.m_attackHitSounds != null)
+            {
+                attackSoundHub.clip = a.m_attackHitSounds;
+                attackSoundHub.Play();
+            }
             m_currentAttack = null;
             m_animator.SetInteger("AttackIndex", -1);
             m_gameManager.EndTurn();
@@ -138,6 +145,7 @@ public class Attack
     public Vector3 m_vfxOffset;
     public GameObject VFX;
     public AudioClip m_attackSounds;
+    public AudioClip m_attackHitSounds;
     public void UpdateAfterUse()
     {
         if (m_currentUses == m_maxUses)
