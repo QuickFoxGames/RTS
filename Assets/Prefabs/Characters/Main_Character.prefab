@@ -287,7 +287,7 @@ MonoBehaviour:
     m_timeOffset: 0
     m_vfxOffset: {x: 0, y: 0, z: 0}
     VFX: {fileID: 0}
-    m_attackSounds: {fileID: 0}
+    m_attackSounds: {fileID: 8300000, guid: 748a207786764af46bbdd4f99dc95c2b, type: 3}
     m_attackHitSounds: {fileID: 0}
   - m_damage: 50
     m_speedMulti: 1
@@ -301,7 +301,7 @@ MonoBehaviour:
     m_timeOffset: 0
     m_vfxOffset: {x: 0, y: 0, z: 0}
     VFX: {fileID: 0}
-    m_attackSounds: {fileID: 0}
+    m_attackSounds: {fileID: 8300000, guid: 748a207786764af46bbdd4f99dc95c2b, type: 3}
     m_attackHitSounds: {fileID: 0}
   - m_damage: 15
     m_speedMulti: 1

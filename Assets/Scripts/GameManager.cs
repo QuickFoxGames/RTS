@@ -132,7 +132,7 @@ public class GameManager : Singleton_template<GameManager>
                 Image[] images = m_turnsDisplay.GetComponentsInChildren<Image>();
                 for (int i = 0; i < images.Length; i++)
                 {
-                    images[i].color = m_turnOrder[m_turnIndex + i] ? Color.blue : Color.red;
+                    images[i].color = m_turnOrder[m_turnIndex + i] ? new Color(0f,0f, 500f, 1f) : new Color(500f, 0f, 0f, 1f);
                 }
             }
         }
