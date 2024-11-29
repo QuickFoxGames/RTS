@@ -206,6 +206,7 @@ public class GameManager : Singleton_template<GameManager>
         }
         m_currentPlayerState = State.Select;
         m_currentEnemy = e;
+        m_turnsDisplay.SetActive(true);
         SceneManager.LoadScene(2);
     }
     public void ExitArena()
@@ -218,6 +219,7 @@ public class GameManager : Singleton_template<GameManager>
             }
             Destroy(e.gameObject);
         }
+        m_turnsDisplay.SetActive(false);
         SceneManager.LoadScene(1);
     }
 }
